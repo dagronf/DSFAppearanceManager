@@ -50,8 +50,8 @@ public extension NSView {
 	///
 	/// See [Discussion](https://dagronf.wordpress.com/2020/08/20/my-nscolor-colorset-colors-arent-changing-when-going-dark/)
 	@inlinable
-	func performAsCurrentDrawingAppearance(_ block: () -> Void) {
-		UsingEffectiveAppearance(of: self, perform: block)
+	func performUsingEffectiveAppearance(_ block: () throws -> Void) rethrows {
+		try UsingEffectiveAppearance(of: self, perform: block)
 	}
 }
 

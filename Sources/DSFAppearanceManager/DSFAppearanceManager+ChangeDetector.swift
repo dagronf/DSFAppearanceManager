@@ -38,6 +38,7 @@ import AppKit
 
 public extension DSFAppearanceManager {
 	/// Detect visibility changes in the UI
+	@objc(DSFAppearanceManagerChangeDetector)
 	class ChangeDetector: NSObject {
 		/// The appearance manager being observed
 		public let appearanceManager: DSFAppearanceManager
@@ -45,9 +46,13 @@ public extension DSFAppearanceManager {
 		/// A callback for when the appearance changes.
 		///
 		/// Guaranteed to always be called on the main thread
-		public var appearanceChangeCallback: ((DSFAppearanceManager, DSFAppearanceManager.Change) -> Void)?
-		
-		public init(appearanceManager: DSFAppearanceManager = DSFAppearanceManager.shared) {
+		@objc public var appearanceChangeCallback: ((DSFAppearanceManager, DSFAppearanceManager.Change) -> Void)?
+
+		@objc public convenience override init() {
+			self.init(appearanceManager: DSFAppearanceManager.shared)
+		}
+
+		@objc public init(appearanceManager: DSFAppearanceManager) {
 			self.appearanceManager = appearanceManager
 			super.init()
 			self.observer = self.appearanceManager.addObserver(queue: .main) { [weak self] notify in

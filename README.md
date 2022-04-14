@@ -3,11 +3,12 @@
 ![](https://img.shields.io/github/v/tag/dagronf/DSFAppearanceManager)
 ![](https://img.shields.io/badge/macOS-10.11+-red) 
 ![](https://img.shields.io/badge/Swift-5.3+-orange.svg)
+![](https://img.shields.io/badge/ObjectiveC-compatible-purple.svg)
 
 ![](https://img.shields.io/badge/License-MIT-lightgrey) 
 [![](https://img.shields.io/badge/spm-compatible-brightgreen.svg?style=flat)](https://swift.org/package-manager)
 
-A class for simplifying macOS appearance values and detecting setting changes.
+A class for simplifying macOS appearance values and detecting setting changes (Swift/Objective-C).
 
 ## Why?
 
@@ -62,13 +63,14 @@ Done!
 
 The change object will indicate the type of change that occurred.
 
-| Change type               | Description                                               |
-|---------------------------|-----------------------------------------------------------|
-| `theme`                   | The system appearance (eg. dark/light) changed            |
-| `accent`                  | The user changed the accent color(s) eg. accent/highlight |
-| `systemColors`            | The user changed the system colors                        |
-| `accentColorOrTheme`      | The user changed finder label color(s)                    |
-| `contrastOrAccessibility` | The accessibility display settings changed                |
+| Change type                | Description                                               |
+|----------------------------|-----------------------------------------------------------|
+| `theme`                    | The system appearance (eg. dark/light) changed            |
+| `accent`                   | The user changed the accent color(s) eg. accent/highlight |
+| `aquaVariant`              | For older macOS versions, the variant (blue, graphite)    |
+| `systemColors`             | The user changed the system colors                        |
+| `finderLabelColorsChanged` | The user changed finder label color(s)                    |
+| `accessibility`            | The accessibility display settings changed                |
 
 Note that the change detection class debounces changes to reduce the number of callbacks when a change occurs.  The `change` object passed in the callback block contains a set of the changes that occurred.
 
@@ -79,6 +81,25 @@ Note that the change detection class debounces changes to reduce the number of c
 ```swift
 func performUsingEffectiveAppearance(_ block: () throws -> Void) rethrows
 ```
+
+## Objective-C support
+
+```objc
+@interface ViewController ()
+@property(nonatomic, strong) DSFAppearanceManagerChangeDetector* detector;
+@end
+
+@implementation ViewController
+- (void)viewDidAppear {
+   [super viewDidAppear];
+   [self setDetector: [[DSFAppearanceManagerChangeDetector alloc] init]];
+   [[self detector] setAppearanceChangeCallback:^(DSFAppearanceManager * _Nonnull manager, DSFAppearanceManagerChange * _Nonnull change) {
+      // Change detected! Do something to update display
+   }];
+}
+@end
+```
+
 
 ## License
 

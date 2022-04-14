@@ -49,11 +49,16 @@ public extension DSFAppearanceManager {
 			self.appearanceManager = appearanceManager
 			super.init()
 			self.observer = self.appearanceManager.addObserver(queue: .main) { [weak self] notify in
+				guard let `self` = self else {
+					// we've gone away (which is valid). Ignore this callback
+					return
+				}
+
 				guard
-					let `self` = self,
 					let info = notify.userInfo?[DSFAppearanceManager.AppearanceManagerChange],
 					let changeType = info as? DSFAppearanceManager.Change
 				else {
+					// Incorrect programming? The change object is unavailable
 					fatalError()
 				}
 				self.appearanceDidChange(changeType)

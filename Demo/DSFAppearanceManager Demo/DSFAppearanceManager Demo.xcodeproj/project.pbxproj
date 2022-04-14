@@ -11,8 +11,21 @@
 		23F9BA402807E62E00226BA4 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F9BA3F2807E62E00226BA4 /* ViewController.swift */; };
 		23F9BA422807E62F00226BA4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 23F9BA412807E62F00226BA4 /* Assets.xcassets */; };
 		23F9BA452807E62F00226BA4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 23F9BA432807E62F00226BA4 /* Main.storyboard */; };
-		23F9BA4F2807E63F00226BA4 /* DSFAppearanceManager in Frameworks */ = {isa = PBXBuildFile; productRef = 23F9BA4E2807E63F00226BA4 /* DSFAppearanceManager */; };
+		23F9BA582808003800226BA4 /* DSFAppearanceManager in Frameworks */ = {isa = PBXBuildFile; productRef = 23F9BA572808003800226BA4 /* DSFAppearanceManager */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		23F9BA562808001200226BA4 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		23F9BA3A2807E62E00226BA4 /* DSFAppearanceManager Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "DSFAppearanceManager Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -29,7 +42,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				23F9BA4F2807E63F00226BA4 /* DSFAppearanceManager in Frameworks */,
+				23F9BA582808003800226BA4 /* DSFAppearanceManager in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -83,6 +96,7 @@
 				23F9BA362807E62E00226BA4 /* Sources */,
 				23F9BA372807E62E00226BA4 /* Frameworks */,
 				23F9BA382807E62E00226BA4 /* Resources */,
+				23F9BA562808001200226BA4 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -90,7 +104,7 @@
 			);
 			name = "DSFAppearanceManager Demo";
 			packageProductDependencies = (
-				23F9BA4E2807E63F00226BA4 /* DSFAppearanceManager */,
+				23F9BA572808003800226BA4 /* DSFAppearanceManager */,
 			);
 			productName = "DSFAppearanceManager Demo";
 			productReference = 23F9BA3A2807E62E00226BA4 /* DSFAppearanceManager Demo.app */;
@@ -360,7 +374,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		23F9BA4E2807E63F00226BA4 /* DSFAppearanceManager */ = {
+		23F9BA572808003800226BA4 /* DSFAppearanceManager */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = DSFAppearanceManager;
 		};

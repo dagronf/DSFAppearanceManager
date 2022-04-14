@@ -1,5 +1,5 @@
 //
-//  DSFThemeChangeDetector.swift
+//  DSFAppearanceManager+ChangeDetector.swift
 //
 //  Created by Darren Ford on 21/6/21.
 //  Copyright © 2022 Darren Ford. All rights reserved.
@@ -26,7 +26,7 @@
 //
 //  Simple example :-
 //
-//   let themeCapture = DSFThemeManager.ChangeDetector()
+//   let themeCapture = DSFAppearanceManager.ChangeDetector()
 //
 //   themeCapture.themeChangeCallback = { [weak self] theme, change in
 //      self?.doSomething(theme)
@@ -36,23 +36,23 @@
 
 import AppKit
 
-public extension DSFThemeManager {
+public extension DSFAppearanceManager {
 	/// Detect visibility changes in the UI
 	class ChangeDetector: NSObject {
 		/// The theme manager being observed
-		public let theme: DSFThemeManager
+		public let theme: DSFAppearanceManager
 		
 		/// A callback for when the theme changes. Guaranteed to always be called on the main thread
-		public var themeChangeCallback: ((DSFThemeManager, DSFThemeManager.Change) -> Void)?
+		public var themeChangeCallback: ((DSFAppearanceManager, DSFAppearanceManager.Change) -> Void)?
 		
-		public init(themeManager: DSFThemeManager = DSFThemeManager.shared) {
+		public init(themeManager: DSFAppearanceManager = DSFAppearanceManager.shared) {
 			self.theme = themeManager
 			super.init()
 			self.observer = self.theme.addObserver(queue: .main) { [weak self] notify in
 				guard
 					let `self` = self,
-					let info = notify.userInfo?[DSFThemeManager.ThemeManagerChange],
-					let changeType = info as? DSFThemeManager.Change
+					let info = notify.userInfo?[DSFAppearanceManager.ThemeManagerChange],
+					let changeType = info as? DSFAppearanceManager.Change
 				else {
 					fatalError()
 				}
@@ -69,7 +69,7 @@ public extension DSFThemeManager {
 		
 		private var observer: NSObjectProtocol?
 		
-		@objc private func themeDidChange(_ change: DSFThemeManager.Change) {
+		@objc private func themeDidChange(_ change: DSFAppearanceManager.Change) {
 			assert(Thread.isMainThread)
 			self.themeChangeCallback?(self.theme, change)
 		}

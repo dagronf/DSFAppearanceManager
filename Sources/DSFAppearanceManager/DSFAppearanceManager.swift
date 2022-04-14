@@ -1,5 +1,5 @@
 //
-//  DSFThemeManager.swift
+//  DSFAppearanceManager.swift
 //
 //  Created by Darren Ford on 28/2/22.
 //  Copyright © 2022 Darren Ford. All rights reserved.
@@ -47,9 +47,9 @@ private extension NSNotification.Name {
 	static let SystemColorsChangeNotification = NSNotification.Name("NSSystemColorsDidChangeNotification")
 }
 
-@objc public final class DSFThemeManager: NSObject {
+@objc public final class DSFAppearanceManager: NSObject {
 	/// A common shared thememanager
-	@objc public static let shared = DSFThemeManager()
+	@objc public static let shared = DSFAppearanceManager()
 
 	/// The notification sent when a change occurs in the theme.
 	///
@@ -115,7 +115,7 @@ private extension NSNotification.Name {
 
 	/// Return the NSColor object representing the system color
 	@objc public static func Color(for systemColor: SystemColor) -> NSColor {
-		return DSFThemeManager.ColorForInt(systemColor.rawValue)
+		return DSFAppearanceManager.ColorForInt(systemColor.rawValue)
 	}
 
 	/// Map an integer value to a system color
@@ -150,19 +150,19 @@ private extension NSNotification.Name {
 	private var notificationCenter: NotificationCenter
 
 	/// Is the UI currently being displayed as dark (Mojave upwards)
-	@objc public private(set) var isDark: Bool = DSFThemeManager.IsDark
+	@objc public private(set) var isDark: Bool = DSFAppearanceManager.IsDark
 
 	/// Are the menu and doc currently being displayed as dark (Yosemite upwards)
-	@objc public private(set) var isDarkMenu: Bool = DSFThemeManager.IsDarkMenu
+	@objc public private(set) var isDarkMenu: Bool = DSFAppearanceManager.IsDarkMenu
 
 	/// What is the current accent color?
-	@objc public private(set) var accentColor: NSColor = DSFThemeManager.AccentColor
+	@objc public private(set) var accentColor: NSColor = DSFAppearanceManager.AccentColor
 
 	/// What is the current highlight color?
-	@objc public private(set) var highlightColor: NSColor = DSFThemeManager.HighlightColor
+	@objc public private(set) var highlightColor: NSColor = DSFAppearanceManager.HighlightColor
 
 	/// What is the current aqua variant color?
-	@objc public private(set) var aquaVariant: AppleAquaColorVariant = DSFThemeManager.AquaVariant
+	@objc public private(set) var aquaVariant: AppleAquaColorVariant = DSFAppearanceManager.AquaVariant
 
 	init(notificationCenter: NotificationCenter = NotificationCenter.default) {
 		self.notificationCenter = notificationCenter
@@ -199,13 +199,13 @@ private extension NSNotification.Name {
 
 // MARK: - Observers and Listeners
 
-@objc public extension DSFThemeManager {
+@objc public extension DSFAppearanceManager {
 	/// Adds an entry to the notification center to call the provided selector with the notification.
 	func addObserver(_ observer: Any, selector aSelector: Selector) {
 		self.notificationCenter.addObserver(
 			observer,
 			selector: aSelector,
-			name: DSFThemeManager.ThemeChangedNotification,
+			name: DSFAppearanceManager.ThemeChangedNotification,
 			object: self
 		)
 	}
@@ -213,7 +213,7 @@ private extension NSNotification.Name {
 	/// Adds an entry to the notification center to receive notifications that passed to the provided block.
 	func addObserver(queue: OperationQueue? = nil, using block: @escaping (Notification) -> Void) -> NSObjectProtocol {
 		return NotificationCenter.default.addObserver(
-			forName: DSFThemeManager.ThemeChangedNotification,
+			forName: DSFAppearanceManager.ThemeChangedNotification,
 			object: self,
 			queue: queue,
 			using: block
@@ -228,11 +228,11 @@ private extension NSNotification.Name {
 
 // MARK: - Static theme values
 
-@objc public extension DSFThemeManager {
+@objc public extension DSFAppearanceManager {
 	/// Is the user interface being displayed as dark (Mojave and later)
 	static var IsDark: Bool {
 		if #available(OSX 10.14, *) {
-			if let style = UserDefaults.standard.string(forKey: DSFThemeManager.kInterfaceStyle) {
+			if let style = UserDefaults.standard.string(forKey: DSFAppearanceManager.kInterfaceStyle) {
 				return style.lowercased().contains("dark")
 			}
 		}
@@ -241,7 +241,7 @@ private extension NSNotification.Name {
 
 	/// Are the menu bars and dock being displayed as dark (Yosemite and later)
 	static var IsDarkMenu: Bool {
-		if let style = UserDefaults.standard.string(forKey: DSFThemeManager.kInterfaceStyle) {
+		if let style = UserDefaults.standard.string(forKey: DSFAppearanceManager.kInterfaceStyle) {
 			return style.lowercased().contains("dark")
 		}
 		return false
@@ -269,7 +269,7 @@ private extension NSNotification.Name {
 	static var HighlightColor: NSColor {
 		let ud = UserDefaults.standard
 
-		guard let setting = ud.string(forKey: DSFThemeManager.kHighlightStyle) else {
+		guard let setting = ud.string(forKey: DSFAppearanceManager.kHighlightStyle) else {
 			return NSColor.systemGray
 		}
 
@@ -284,11 +284,11 @@ private extension NSNotification.Name {
 	/// Returns the current aqua variant. (graphite or aqua style on older macOS)
 	static var AquaVariant: AppleAquaColorVariant {
 		let userDefaults = UserDefaults.standard
-		guard userDefaults.object(forKey: DSFThemeManager.kAquaVariantColor) != nil else {
+		guard userDefaults.object(forKey: DSFAppearanceManager.kAquaVariantColor) != nil else {
 			return AppleAquaColorVariant.blue
 		}
 
-		let colorDef = userDefaults.integer(forKey: DSFThemeManager.kAquaVariantColor)
+		let colorDef = userDefaults.integer(forKey: DSFAppearanceManager.kAquaVariantColor)
 		guard let variant = AppleAquaColorVariant(rawValue: colorDef) else {
 			return AppleAquaColorVariant.blue
 		}
@@ -298,7 +298,7 @@ private extension NSNotification.Name {
 
 // MARK: - Internals
 
-private extension DSFThemeManager {
+private extension DSFAppearanceManager {
 	private func installNotificationListeners() {
 		// Listen for theme changes
 		self.distributedNotificationCenter.addObserver(
@@ -405,9 +405,9 @@ private extension DSFThemeManager {
 		let ch = self.queuedChanges
 		self.queuedChanges = Change()
 		self.notificationCenter.post(
-			name: DSFThemeManager.ThemeChangedNotification,
+			name: DSFAppearanceManager.ThemeChangedNotification,
 			object: self,
-			userInfo: [DSFThemeManager.ThemeManagerChange: ch]
+			userInfo: [DSFAppearanceManager.ThemeManagerChange: ch]
 		)
 	}
 }

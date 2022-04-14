@@ -30,10 +30,10 @@ import AppKit
 ///
 /// See [Discussion](https://dagronf.wordpress.com/2020/08/20/my-nscolor-colorset-colors-arent-changing-when-going-dark/)
 @inlinable
-public func UsingEffectiveAppearance(of view: NSView, perform block: () throws -> Void) rethrows {
+public func UsingEffectiveAppearance(of view: NSView, perform block: (NSAppearance) throws -> Void) rethrows {
 	if #available(macOS 11.0, *) {
 		view.effectiveAppearance.performAsCurrentDrawingAppearance {
-			try? block()
+			try? block(view.effectiveAppearance)
 		}
 	} else {
 		let saved = NSAppearance.current
@@ -41,7 +41,7 @@ public func UsingEffectiveAppearance(of view: NSView, perform block: () throws -
 		defer {
 			NSAppearance.current = saved
 		}
-		try block()
+		try block(NSAppearance.current)
 	}
 }
 
@@ -50,7 +50,7 @@ public extension NSView {
 	///
 	/// See [Discussion](https://dagronf.wordpress.com/2020/08/20/my-nscolor-colorset-colors-arent-changing-when-going-dark/)
 	@inlinable
-	func performUsingEffectiveAppearance(_ block: () throws -> Void) rethrows {
+	func performUsingEffectiveAppearance(_ block: (NSAppearance) throws -> Void) rethrows {
 		try UsingEffectiveAppearance(of: self, perform: block)
 	}
 }

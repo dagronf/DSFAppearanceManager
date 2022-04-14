@@ -53,9 +53,8 @@ class ViewController: NSViewController {
 	}
 
 	func update() {
-		self.view.performUsingEffectiveAppearance {
+		self.view.performUsingEffectiveAppearance { appearance in
 			isDarkImage.image = DSFAppearanceManager.IsDark ? imageYes : imageNo
-
 			isDarkMenuImage.image = DSFAppearanceManager.IsDarkMenu ? imageYes : imageNo
 
 			accentColor.color = DSFAppearanceManager.AccentColor

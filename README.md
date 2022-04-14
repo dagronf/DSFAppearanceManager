@@ -3,7 +3,7 @@
 ![](https://img.shields.io/github/v/tag/dagronf/DSFAppearanceManager)
 ![](https://img.shields.io/badge/macOS-10.11+-red) 
 ![](https://img.shields.io/badge/Swift-5.3+-orange.svg)
-![](https://img.shields.io/badge/ObjectiveC-compatible-purple.svg)
+![](https://img.shields.io/badge/ObjectiveC-2.0-purple.svg)
 
 ![](https://img.shields.io/badge/License-MIT-lightgrey) 
 [![](https://img.shields.io/badge/spm-compatible-brightgreen.svg?style=flat)](https://swift.org/package-manager)
@@ -12,7 +12,9 @@ A class for simplifying macOS appearance values and detecting setting changes (S
 
 ## Why?
 
-I wanted to centralize this functionality in a single place, along with automatically handling change events.
+If you're performing custom drawing within your macOS app, it's important to obey the user's display and accessibility settings when performing your drawing so you can adapt accordingly.
+
+Secondly, when the user changes their settings (eg. when the system changes automatically light/dark modes) I wanted my app to be notified of the change so I can update the drawing to match the new setting(s).
 
 ## Appearance
 
@@ -37,7 +39,9 @@ These are the static properties available on the `DSFAppearanceManager`
 
 So, for example, to get the current macOS highlight color, call `DSFAppearanceManager.HighlightColor`.
 
-## Simple change detection
+## Change detection
+
+You can ask to be notified when appearance settings changes.
 
 Declare a variable of type `DSFAppearanceManager.ChangeDetector()`
 
@@ -45,7 +49,7 @@ Declare a variable of type `DSFAppearanceManager.ChangeDetector()`
 private let appearanceChangeDetector = DSFAppearanceManager.ChangeDetector()
 ```
 
-... and set the callback block
+... and set the callback block.
 
 ```swift
 appearanceChangeDetector.appearanceChangeCallback = { [weak self] manager, change in
@@ -74,14 +78,6 @@ The change object will indicate the type of change that occurred.
 
 Note that the change detection class debounces changes to reduce the number of callbacks when a change occurs.  The `change` object passed in the callback block contains a set of the changes that occurred.
 
-## NSView appearance drawing
-
-`DSFAppearanceManager` provides extensions to the `NSView` class as a convenience for automatically handling the view's effective drawing appearance.
-
-```swift
-func performUsingEffectiveAppearance(_ block: () throws -> Void) rethrows
-```
-
 ## Objective-C support
 
 ```objc
@@ -100,6 +96,41 @@ func performUsingEffectiveAppearance(_ block: () throws -> Void) rethrows
 @end
 ```
 
+## Additional info
+
+### `NSView` appearance drawing
+
+`DSFAppearanceManager` provides extensions to `NSView` as a convenience for automatically handling the view's effective drawing appearance.
+
+```swift
+func drawRect(_ dirtyRect: CGRect) {
+   ...
+   self.performUsingEffectiveAppearance { appearance in
+      // Do your drawing using 'appearance'
+      // Requests for dynamic colors etc. will automatically use the correct appearance for the view.
+   }
+}
+```
+
+### Rolling your own dynamic `NSColor`
+
+If you can't use the `Assets.xcassets` to store your dynamic `NSColor`s (or you want to move your app's configuration into code) you'll find that the default `NSColor` doesn't have much support for automatically handling light/dark mode changes.
+ 
+[Dusk](https://github.com/ChimeHQ/Dusk) is a small swift framework to aid in supporting Dark Mode on macOS. It provides an `NSColor` subclass (`DynamicColor`) that automatically provides light/dark mode variants when required.
+
+```swift
+lazy var c1 = DynamicColor(name: "uniqueColorName") { (appearance) in 
+    // return the color to use for this appearance
+}
+
+let c1 = DynamicColor(name: "uniqueColorName", lightColor: NSColor.white, darkColor: NSColor.black)
+```
+
+And because `DynamicColor` inherits from `NSColor`, it can be used wherever `NSColor` can be used.
+
+## Thanks!
+
+[`ChimeHQ`](https://github.com/ChimeHQ) for developing the awesome [dynamic NSColor subclass](https://github.com/ChimeHQ/Dusk).
 
 ## License
 

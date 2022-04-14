@@ -1,15 +1,18 @@
-// swift-tools-version: 5.6
+// swift-tools-version:5.3
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
 
 let package = Package(
-    name: "DSFThemeManagement",
+    name: "DSFThemeManager",
+	 platforms: [
+		  .macOS(.v10_11),
+	 ],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
-            name: "DSFThemeManagement",
-            targets: ["DSFThemeManagement"]),
+            name: "DSFThemeManager",
+            targets: ["DSFThemeManager"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -19,10 +22,10 @@ let package = Package(
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
-            name: "DSFThemeManagement",
+            name: "DSFThemeManager",
             dependencies: []),
         .testTarget(
-            name: "DSFThemeManagementTests",
-            dependencies: ["DSFThemeManagement"]),
+            name: "DSFThemeManagerTests",
+            dependencies: ["DSFThemeManager"]),
     ]
 )

@@ -26,10 +26,10 @@
 //
 //  Simple example :-
 //
-//   let themeCapture = DSFAppearanceManager.ChangeDetector()
+//   let appearanceCapture = DSFAppearanceManager.ChangeDetector()
 //
-//   themeCapture.themeChangeCallback = { [weak self] theme, change in
-//      self?.doSomething(theme)
+//   appearanceCapture.appearanceChangeCallback = { [weak self] appearanceManager, change in
+//      self?.doSomething(change)
 //   }
 
 #if os(macOS)
@@ -39,39 +39,39 @@ import AppKit
 public extension DSFAppearanceManager {
 	/// Detect visibility changes in the UI
 	class ChangeDetector: NSObject {
-		/// The theme manager being observed
-		public let theme: DSFAppearanceManager
+		/// The appearance manager being observed
+		public let appearanceManager: DSFAppearanceManager
 		
-		/// A callback for when the theme changes. Guaranteed to always be called on the main thread
-		public var themeChangeCallback: ((DSFAppearanceManager, DSFAppearanceManager.Change) -> Void)?
+		/// A callback for when the appearance changes. Guaranteed to always be called on the main thread
+		public var appearanceChangeCallback: ((DSFAppearanceManager, DSFAppearanceManager.Change) -> Void)?
 		
-		public init(themeManager: DSFAppearanceManager = DSFAppearanceManager.shared) {
-			self.theme = themeManager
+		public init(appearanceManager: DSFAppearanceManager = DSFAppearanceManager.shared) {
+			self.appearanceManager = appearanceManager
 			super.init()
-			self.observer = self.theme.addObserver(queue: .main) { [weak self] notify in
+			self.observer = self.appearanceManager.addObserver(queue: .main) { [weak self] notify in
 				guard
 					let `self` = self,
-					let info = notify.userInfo?[DSFAppearanceManager.ThemeManagerChange],
+					let info = notify.userInfo?[DSFAppearanceManager.AppearanceManagerChange],
 					let changeType = info as? DSFAppearanceManager.Change
 				else {
 					fatalError()
 				}
-				self.themeDidChange(changeType)
+				self.appearanceDidChange(changeType)
 			}
 		}
 		
 		deinit {
 			self.observer = nil
-			self.themeChangeCallback = nil
+			self.appearanceChangeCallback = nil
 		}
 		
 		// Privates
 		
 		private var observer: NSObjectProtocol?
 		
-		@objc private func themeDidChange(_ change: DSFAppearanceManager.Change) {
+		@objc private func appearanceDidChange(_ change: DSFAppearanceManager.Change) {
 			assert(Thread.isMainThread)
-			self.themeChangeCallback?(self.theme, change)
+			self.appearanceChangeCallback?(self.appearanceManager, change)
 		}
 	}
 }

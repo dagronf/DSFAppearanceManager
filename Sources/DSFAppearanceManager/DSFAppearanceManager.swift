@@ -30,8 +30,8 @@
 //
 //  Simple Usage :-
 //
-//     _ = DSFThemeManager.shared.addObserver { notification in
-//         Swift.print(self.theme)
+//     _ = DSFAppearanceManager.shared.addObserver { notification in
+//         Swift.print(...)
 //     }
 //
 
@@ -48,22 +48,22 @@ private extension NSNotification.Name {
 }
 
 @objc public final class DSFAppearanceManager: NSObject {
-	/// A common shared thememanager
+	/// A common shared appearance manager
 	@objc public static let shared = DSFAppearanceManager()
 
 	/// The notification sent when a change occurs in the theme.
 	///
-	/// The userInfo contains the change type(s) as an via the key DSFThemeManager.ThemeChangedNotification,
-	/// as a `DSFThemeManager.Changes` object
-	@objc(DSFThemeManagerThemeChangedNotification)
-	public static let ThemeChangedNotification = NSNotification.Name("DSFThemeManager.ThemeChangedNotification")
+	/// The userInfo contains the change type(s) as an via the key DSFAppearanceManager.AppearanceChangedNotification,
+	/// as a `DSFAppearanceManager.Changes` object
+	@objc(DSFAppearanceManagerThemeChangedNotification)
+	public static let AppearanceChangedNotification = NSNotification.Name("DSFAppearanceManager.AppearanceChangedNotification")
 
 	/// Key for the notification containing the type(s) of changes that occured.
-	@objc(DSFThemeManagerChange)
-	public static let ThemeManagerChange: String = "DSFThemeManagerChange"
+	@objc(DSFAppearanceManagerChange)
+	public static let AppearanceManagerChange = "DSFAppearanceManagerChange"
 
 	/// The type of a change that occurred
-	@objc(DSFThemeManagerStyleChangeType)
+	@objc(DSFAppearanceManagerStyleChangeType)
 	public enum StyleChangeType: Int {
 		case theme = 0
 		case accent = 1
@@ -74,7 +74,7 @@ private extension NSNotification.Name {
 	}
 
 	/// A class containing the current set of theme changes
-	@objc(DSFThemeManagerChange)
+	@objc(DSFAppearanceManagerChange)
 	public class Change: NSObject {
 		public private(set) var changes = Set<StyleChangeType>()
 
@@ -90,18 +90,18 @@ private extension NSNotification.Name {
 	private let debouncer = DSFDebounce(seconds: 0.1)
 	private var queuedChanges = Change()
 
-	fileprivate static let kInterfaceStyle: String = "AppleInterfaceStyle"
-	fileprivate static let kHighlightStyle: String = "AppleHighlightColor"
-	fileprivate static let kAccentColor: String = "AppleAccentColor"
-	fileprivate static let kAquaVariantColor: String = "AppleAquaColorVariant"
+	fileprivate static let kInterfaceStyle = "AppleInterfaceStyle"
+	fileprivate static let kHighlightStyle = "AppleHighlightColor"
+	fileprivate static let kAccentColor = "AppleAccentColor"
+	fileprivate static let kAquaVariantColor = "AppleAquaColorVariant"
 
-	@objc(DSFThemeManagerAquaColorVariant)
+	@objc(DSFAppearanceManagerAquaColorVariant)
 	public enum AppleAquaColorVariant: Int {
 		case blue = 1
 		case graphite = 6
 	}
 
-	@objc(DSFThemeManagerSystemColor)
+	@objc(DSFAppearanceManagerSystemColor)
 	public enum SystemColor: Int {
 		case graphite = -1
 		case red = 0
@@ -143,12 +143,6 @@ private extension NSNotification.Name {
 		}
 	}
 
-	/// The distributed notification center to listen to for some of the notification types
-	private let distributedNotificationCenter = DistributedNotificationCenter.default()
-
-	/// The notification center to post updates on
-	private var notificationCenter: NotificationCenter
-
 	/// Is the UI currently being displayed as dark (Mojave upwards)
 	@objc public private(set) var isDark: Bool = DSFAppearanceManager.IsDark
 
@@ -164,6 +158,21 @@ private extension NSNotification.Name {
 	/// What is the current aqua variant color?
 	@objc public private(set) var aquaVariant: AppleAquaColorVariant = DSFAppearanceManager.AquaVariant
 
+	/// Should the UI be drawn with increased contrast?
+	@objc public private(set) var increaseContrast: Bool = DSFAppearanceManager.IncreaseContrast
+
+	/// Should the UI be drawn differentiating without using color?
+	@objc public private(set) var differentiateWithoutColor: Bool = DSFAppearanceManager.DifferentiateWithoutColor
+
+	/// Should the UI be drawn with reduced transparency?
+	@objc public private(set) var reduceTransparency: Bool = DSFAppearanceManager.ReduceTransparency
+
+	/// Is the system currently configured to invert the display?
+	@objc public private(set) var invertColors: Bool = DSFAppearanceManager.InvertColors
+
+	/// Should we reduce motion within our UI?
+	@objc public private(set) var reduceMotion: Bool = DSFAppearanceManager.ReduceMotion
+
 	init(notificationCenter: NotificationCenter = NotificationCenter.default) {
 		self.notificationCenter = notificationCenter
 		super.init()
@@ -177,14 +186,19 @@ private extension NSNotification.Name {
 
 	override public var description: String {
 		return
-			"""
-			Current Theme:
-				isDark: \(self.isDark)
-				isDarkMenu: \(self.isDarkMenu)
-				accentColor: \(self.accentColor)
-				highlightColor: \(self.highlightColor)
-				aquaVariant: \(self.aquaVariant)
-			"""
+	"""
+	Current Theme:
+		isDark: \(self.isDark)
+		isDarkMenu: \(self.isDarkMenu)
+		accentColor: \(self.accentColor)
+		highlightColor: \(self.highlightColor)
+		aquaVariant: \(self.aquaVariant)
+		increaseContrast: \(self.increaseContrast)
+		differentiateWithoutColor: \(self.differentiateWithoutColor)
+		reduceTransparency: \(self.reduceTransparency)
+		invertColors: \(self.invertColors)
+		reduceMotion: \(self.reduceMotion)
+	"""
 	}
 
 	/// Force a reload of the theme cache
@@ -195,6 +209,14 @@ private extension NSNotification.Name {
 		self.highlightColor = Self.HighlightColor
 		self.aquaVariant = Self.AquaVariant
 	}
+
+	// Private
+
+	/// The distributed notification center to listen to for some of the notification types
+	private let distributedNotificationCenter = DistributedNotificationCenter.default()
+
+	/// The notification center to post updates on
+	private var notificationCenter: NotificationCenter
 }
 
 // MARK: - Observers and Listeners
@@ -205,7 +227,7 @@ private extension NSNotification.Name {
 		self.notificationCenter.addObserver(
 			observer,
 			selector: aSelector,
-			name: DSFAppearanceManager.ThemeChangedNotification,
+			name: DSFAppearanceManager.AppearanceChangedNotification,
 			object: self
 		)
 	}
@@ -213,7 +235,7 @@ private extension NSNotification.Name {
 	/// Adds an entry to the notification center to receive notifications that passed to the provided block.
 	func addObserver(queue: OperationQueue? = nil, using block: @escaping (Notification) -> Void) -> NSObjectProtocol {
 		return NotificationCenter.default.addObserver(
-			forName: DSFAppearanceManager.ThemeChangedNotification,
+			forName: DSFAppearanceManager.AppearanceChangedNotification,
 			object: self,
 			queue: queue,
 			using: block
@@ -294,13 +316,68 @@ private extension NSNotification.Name {
 		}
 		return variant
 	}
+
+	/// Get the current accessibility display option for high-contrast UI.  If this is true, UI should be presented with high contrast such as utilizing a less subtle color palette or bolder lines.
+	///
+	/// See: `NSWorkspace.shared.accessibilityDisplayShouldIncreaseContrast`.
+	static var IncreaseContrast: Bool {
+		if #available(macOS 10.10, *) {
+			return NSWorkspace.shared.accessibilityDisplayShouldIncreaseContrast
+		}
+		return false
+	}
+
+	/// Get the current accessibility display option for differentiate without color. If this is true, UI should not convey information using color alone and instead should use shapes or glyphs to convey information.
+	///
+	/// See: `NSWorkspace.shared.accessibilityDisplayShouldDifferentiateWithoutColor`.
+	static var DifferentiateWithoutColor: Bool {
+		if #available(macOS 10.10, *) {
+			return NSWorkspace.shared.accessibilityDisplayShouldDifferentiateWithoutColor
+		}
+		return false
+	}
+
+	/// Get the current accessibility display option for reduce transparency. If this property's value is true, UI (mainly window) backgrounds should not be semi-transparent; they should be opaque.
+	///
+	/// See: `NSWorkspace.shared.accessibilityDisplayShouldReduceTransparency`
+	static var ReduceTransparency: Bool {
+		if #available(macOS 10.10, *) {
+			return NSWorkspace.shared.accessibilityDisplayShouldReduceTransparency
+		}
+		else {
+			return false
+		}
+	}
+
+	/// Get the current accessibility display option for invert colors. If this property's value is true then the display will be inverted. In these cases it may be needed for UI drawing to be adjusted to in order to display optimally when inverted.
+	///
+	/// See: `NSWorkspace.shared.accessibilityDisplayShouldInvertColors`
+	static var InvertColors: Bool {
+		if #available(macOS 10.12, *) {
+			return NSWorkspace.shared.accessibilityDisplayShouldInvertColors
+		}
+		return false
+	}
+
+	/// Get the current accessibility display option for reduce motion. If this property's value is true, UI should avoid large animations, especially those that simulate the third dimension.
+	///
+	/// See: `NSWorkspace.shared.accessibilityDisplayShouldReduceMotion`.
+	static var ReduceMotion: Bool {
+		if #available(macOS 10.12, *) {
+			return NSWorkspace.shared.accessibilityDisplayShouldReduceMotion
+		}
+		else {
+			// Fallback on earlier versions
+			return false
+		}
+	}
 }
 
 // MARK: - Internals
 
 private extension DSFAppearanceManager {
 	private func installNotificationListeners() {
-		// Listen for theme changes
+		// Listen for appearance changes
 		self.distributedNotificationCenter.addObserver(
 			self,
 			selector: #selector(self.themeChange),
@@ -345,35 +422,36 @@ private extension DSFAppearanceManager {
 			self,
 			selector: #selector(self.accessibilityDidChange),
 			name: NSWorkspace.accessibilityDisplayOptionsDidChangeNotification,
-			object: NSWorkspace.shared)
+			object: NSWorkspace.shared
+		)
 	}
 
 	@objc private func themeChange() {
-		self.changedTheme(change: .theme)
+		self.appearanceDidChange(change: .theme)
 	}
 
 	@objc private func accentChange() {
-		self.changedTheme(change: .accent)
+		self.appearanceDidChange(change: .accent)
 	}
 
 	@objc private func aquaVariantChange() {
-		self.changedTheme(change: .aquaVariant)
+		self.appearanceDidChange(change: .aquaVariant)
 	}
 
 	@objc private func systemColorsChange() {
-		self.changedTheme(change: .systemColors)
+		self.appearanceDidChange(change: .systemColors)
 	}
 
 	@objc private func finderLabelsDidChange() {
-		self.changedTheme(change: .accentColorOrTheme)
+		self.appearanceDidChange(change: .accentColorOrTheme)
 	}
 
 	@objc private func accessibilityDidChange() {
-		self.changedTheme(change: .contrastOrAccessibility)
+		self.appearanceDidChange(change: .contrastOrAccessibility)
 	}
 
-	private func changedTheme(change: StyleChangeType) {
-		// Swift.print("DSFThemeManager: update")
+	private func appearanceDidChange(change: StyleChangeType) {
+		// Swift.print("DSFAppearanceManager: update")
 
 		// Make sure that these occur on the main queue
 		DispatchQueue.main.async { [weak self] in
@@ -405,9 +483,9 @@ private extension DSFAppearanceManager {
 		let ch = self.queuedChanges
 		self.queuedChanges = Change()
 		self.notificationCenter.post(
-			name: DSFAppearanceManager.ThemeChangedNotification,
+			name: DSFAppearanceManager.AppearanceChangedNotification,
 			object: self,
-			userInfo: [DSFAppearanceManager.ThemeManagerChange: ch]
+			userInfo: [DSFAppearanceManager.AppearanceManagerChange: ch]
 		)
 	}
 }

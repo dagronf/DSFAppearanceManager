@@ -99,6 +99,13 @@ private extension NSNotification.Name {
 	public enum AppleAquaColorVariant: Int {
 		case blue = 1
 		case graphite = 6
+		public var stringValue: String {
+			switch self {
+			case .blue: return "blue"
+			case .graphite: return "graphite"
+			default: fatalError()
+			}
+		}
 	}
 
 	@objc(DSFAppearanceManagerSystemColor)

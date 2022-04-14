@@ -42,7 +42,9 @@ public extension DSFAppearanceManager {
 		/// The appearance manager being observed
 		public let appearanceManager: DSFAppearanceManager
 		
-		/// A callback for when the appearance changes. Guaranteed to always be called on the main thread
+		/// A callback for when the appearance changes.
+		///
+		/// Guaranteed to always be called on the main thread
 		public var appearanceChangeCallback: ((DSFAppearanceManager, DSFAppearanceManager.Change) -> Void)?
 		
 		public init(appearanceManager: DSFAppearanceManager = DSFAppearanceManager.shared) {

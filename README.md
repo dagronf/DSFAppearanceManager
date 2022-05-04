@@ -52,15 +52,14 @@ Declare a variable of type `DSFAppearanceManager.ChangeDetector()`
 private let appearanceChangeDetector = DSFAppearanceManager.ChangeDetector()
 ```
 
-... and set the callback block.
+... and set the callback block. Note that this callback is guaranteed to be called on the main thread.
 
 ```swift
-appearanceChangeDetector.appearanceChangeCallback = { [weak self] manager, change in
-	// Handle the change here.
-	// `change` contains the _types_ of change(s) that occurred. 
-	//  This might be theme, accent, contrastOrAccessibility etc
-	let newColor = manager.accentColor
-	...
+appearanceChangeDetector.appearanceChangeCallback = { [weak self] change in
+   // Handle the change here.
+   // `change` contains the _types_ of change(s) that occurred. This might be theme, accent, contrastOrAccessibility etc
+   let currentHighlightColor = DSFAppearanceManager.HighlightColor
+   ...
 }
 ```
 
@@ -77,7 +76,8 @@ The change object indicates the type of change that occurred.
 | `finderLabelColorsChanged` | The user changed finder label color(s)                    |
 | `accessibility`            | The accessibility display settings changed                |
 
-Note that the change detection class debounces changes to reduce the number of callbacks when a change occurs.  The `change` object passed in the callback block contains a set of the changes that occurred.
+Note that the change detection class debounces changes to reduce the number of callbacks when a change occurs.
+The `change` object passed in the callback block contains a set of the changes that occurred.
 
 ## Objective-C support
 
@@ -90,7 +90,7 @@ Note that the change detection class debounces changes to reduce the number of c
 - (void)viewDidAppear {
    [super viewDidAppear];
    [self setDetector: [[DSFAppearanceManagerChangeDetector alloc] init]];
-   [[self detector] setAppearanceChangeCallback:^(DSFAppearanceManager * _Nonnull manager, DSFAppearanceManagerChange * _Nonnull change) {
+   [[self detector] setAppearanceChangeCallback:^(DSFAppearanceManagerChange * _Nonnull change) {
       // Change detected! Do something to update display
    }];
 }

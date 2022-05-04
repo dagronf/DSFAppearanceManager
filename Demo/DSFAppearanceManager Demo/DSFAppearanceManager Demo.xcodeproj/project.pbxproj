@@ -6,6 +6,21 @@
 	objectVersion = 54;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		23E31718282333E100E0A069 /* All Demos */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 23E3171B282333E100E0A069 /* Build configuration list for PBXAggregateTarget "All Demos" */;
+			buildPhases = (
+			);
+			dependencies = (
+				23E3171D282333EC00E0A069 /* PBXTargetDependency */,
+				23E3171F282333EC00E0A069 /* PBXTargetDependency */,
+			);
+			name = "All Demos";
+			productName = "All Demos";
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		23F9BA3E2807E62E00226BA4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F9BA3D2807E62E00226BA4 /* AppDelegate.swift */; };
 		23F9BA402807E62E00226BA4 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F9BA3F2807E62E00226BA4 /* ViewController.swift */; };
@@ -19,6 +34,23 @@
 		23F9BA95280803DF00226BA4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 23F9BA94280803DF00226BA4 /* main.m */; };
 		23F9BA9B2808040800226BA4 /* DSFAppearanceManager in Frameworks */ = {isa = PBXBuildFile; productRef = 23F9BA9A2808040800226BA4 /* DSFAppearanceManager */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		23E3171C282333EC00E0A069 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 23F9BA322807E62E00226BA4 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 23F9BA392807E62E00226BA4;
+			remoteInfo = "DSFAppearanceManager Demo";
+		};
+		23E3171E282333EC00E0A069 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 23F9BA322807E62E00226BA4 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 23F9BA86280803DE00226BA4;
+			remoteInfo = "DSFAppearanceManager ObjC Demo";
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		23F9BA562808001200226BA4 /* Embed Frameworks */ = {
@@ -180,6 +212,9 @@
 				LastSwiftUpdateCheck = 1330;
 				LastUpgradeCheck = 1330;
 				TargetAttributes = {
+					23E31718282333E100E0A069 = {
+						CreatedOnToolsVersion = 13.3.1;
+					};
 					23F9BA392807E62E00226BA4 = {
 						CreatedOnToolsVersion = 13.3.1;
 					};
@@ -205,6 +240,7 @@
 			targets = (
 				23F9BA392807E62E00226BA4 /* DSFAppearanceManager Demo */,
 				23F9BA86280803DE00226BA4 /* DSFAppearanceManager ObjC Demo */,
+				23E31718282333E100E0A069 /* All Demos */,
 			);
 		};
 /* End PBXProject section */
@@ -252,6 +288,19 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		23E3171D282333EC00E0A069 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 23F9BA392807E62E00226BA4 /* DSFAppearanceManager Demo */;
+			targetProxy = 23E3171C282333EC00E0A069 /* PBXContainerItemProxy */;
+		};
+		23E3171F282333EC00E0A069 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 23F9BA86280803DE00226BA4 /* DSFAppearanceManager ObjC Demo */;
+			targetProxy = 23E3171E282333EC00E0A069 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
 		23F9BA432807E62F00226BA4 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
@@ -272,6 +321,24 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		23E31719282333E100E0A069 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 3L6RK3LGGW;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		23E3171A282333E100E0A069 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 3L6RK3LGGW;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		23F9BA472807E62F00226BA4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -500,6 +567,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		23E3171B282333E100E0A069 /* Build configuration list for PBXAggregateTarget "All Demos" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				23E31719282333E100E0A069 /* Debug */,
+				23E3171A282333E100E0A069 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		23F9BA352807E62E00226BA4 /* Build configuration list for PBXProject "DSFAppearanceManager Demo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

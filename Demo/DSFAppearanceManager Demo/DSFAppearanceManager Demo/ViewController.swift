@@ -40,7 +40,8 @@ class ViewController: NSViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
-		self.changeDetector.appearanceChangeCallback = { [weak self] manager, change in
+		self.changeDetector.appearanceChangeCallback = { [weak self] change in
+			Swift.print("DSFAppearanceManager change detected - \(change)")
 			self?.appearanceDidChange(change)
 		}
 
@@ -62,13 +63,9 @@ class ViewController: NSViewController {
 			aquaVariantImage.image = DSFAppearanceManager.AquaVariant == .blue ? imageAquaBlue : imageAquaGraphite
 
 			increaseContrastImage.image = DSFAppearanceManager.IncreaseContrast ? imageYes : imageNo
-
 			differentiateWithoutColorImage.image = DSFAppearanceManager.DifferentiateWithoutColor ? imageYes : imageNo
-
 			reduceTransparencyImage.image = DSFAppearanceManager.ReduceTransparency ? imageYes : imageNo
-
 			invertColorsImage.image = DSFAppearanceManager.InvertColors ? imageYes : imageNo
-
 			reduceMotionImage.image = DSFAppearanceManager.ReduceMotion ? imageYes : imageNo
 		}
 	}

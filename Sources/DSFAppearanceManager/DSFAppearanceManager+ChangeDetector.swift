@@ -24,11 +24,15 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 //
+//  With help from
+//    https://chromium.googlesource.com/chromium/src/+/master/content/renderer/theme_helper_mac.mm
+//    https://bugzilla.mozilla.org/show_bug.cgi?id=1062801
+//
 //  Simple example :-
 //
 //   let appearanceCapture = DSFAppearanceManager.ChangeDetector()
 //
-//   appearanceCapture.appearanceChangeCallback = { [weak self] appearanceManager, change in
+//   appearanceCapture.appearanceChangeCallback = { [weak self] change in
 //      self?.doSomething(change)
 //   }
 
@@ -37,25 +41,18 @@
 import AppKit
 
 public extension DSFAppearanceManager {
-	/// Detect visibility changes in the UI
+	/// Appearance change detector.
 	@objc(DSFAppearanceManagerChangeDetector)
 	class ChangeDetector: NSObject {
-		/// The appearance manager being observed
-		public let appearanceManager: DSFAppearanceManager
-		
 		/// A callback for when the appearance changes.
 		///
 		/// Guaranteed to always be called on the main thread
-		@objc public var appearanceChangeCallback: ((DSFAppearanceManager, DSFAppearanceManager.Change) -> Void)?
+		@objc public var appearanceChangeCallback: ((DSFAppearanceManager.Change) -> Void)?
 
-		@objc public convenience override init() {
-			self.init(appearanceManager: DSFAppearanceManager.shared)
-		}
-
-		@objc public init(appearanceManager: DSFAppearanceManager) {
-			self.appearanceManager = appearanceManager
+		/// Create a change detector
+		@objc override public init() {
 			super.init()
-			self.observer = self.appearanceManager.addObserver(queue: .main) { [weak self] notify in
+			self.observer = DSFAppearanceManager.shared.addObserver(queue: .main) { [weak self] notify in
 				guard let `self` = self else {
 					// we've gone away (which is valid). Ignore this callback
 					return
@@ -71,19 +68,25 @@ public extension DSFAppearanceManager {
 				self.appearanceDidChange(changeType)
 			}
 		}
-		
+
+		/// Create a change detector with an appearance change callback
+		@objc public convenience init(appearanceChangeCallback: @escaping ((DSFAppearanceManager.Change) -> Void)) {
+			self.init()
+			self.appearanceChangeCallback = appearanceChangeCallback
+		}
+
 		deinit {
 			self.observer = nil
 			self.appearanceChangeCallback = nil
 		}
-		
+
 		// Privates
-		
+
 		private var observer: NSObjectProtocol?
-		
+
 		@objc private func appearanceDidChange(_ change: DSFAppearanceManager.Change) {
 			assert(Thread.isMainThread)
-			self.appearanceChangeCallback?(self.appearanceManager, change)
+			self.appearanceChangeCallback?(change)
 		}
 	}
 }

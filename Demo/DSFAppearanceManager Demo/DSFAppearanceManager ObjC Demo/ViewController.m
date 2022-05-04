@@ -28,7 +28,8 @@
 
 	[self setDetector: [[DSFAppearanceManagerChangeDetector alloc] init]];
 
-	[[self detector] setAppearanceChangeCallback:^(DSFAppearanceManager * _Nonnull manager, DSFAppearanceManagerChange * _Nonnull change) {
+	[[self detector] setAppearanceChangeCallback:^(DSFAppearanceManagerChange * _Nonnull change) {
+		NSLog(@"Change detected! - change was \(%@)", change);
 		[self updateDisplay];
 	}];
 
@@ -36,7 +37,7 @@
 }
 
 - (void)updateDisplay {
-	[[self resultField] setStringValue: [NSString stringWithFormat:@"%@", [DSFAppearanceManager shared]]];
+	[[self resultField] setStringValue: [NSString stringWithFormat:@"%@", [DSFAppearanceManager Description]]];
 }
 
 

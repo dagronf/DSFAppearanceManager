@@ -35,7 +35,8 @@ public func UsingEffectiveAppearance(of view: NSView, perform block: (NSAppearan
 		view.effectiveAppearance.performAsCurrentDrawingAppearance {
 			try? block(view.effectiveAppearance)
 		}
-	} else {
+	}
+	else {
 		let saved = NSAppearance.current
 		NSAppearance.current = view.effectiveAppearance
 		defer {

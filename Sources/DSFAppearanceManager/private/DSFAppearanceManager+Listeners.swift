@@ -24,6 +24,10 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 //
+//  With help from
+//    https://chromium.googlesource.com/chromium/src/+/master/content/renderer/theme_helper_mac.mm
+//    https://bugzilla.mozilla.org/show_bug.cgi?id=1062801
+//
 
 #if os(macOS)
 
@@ -118,9 +122,6 @@ internal extension DSFAppearanceManager {
 		// Using the main thread here avoids race conditions on `self.queuedChanges`
 		assert(Thread.isMainThread)
 		
-		// Update the local caches first
-		self.updateCache()
-		
 		// Update the queue with the new change type
 		self.queuedChanges.add(change: change)
 		
@@ -144,5 +145,35 @@ internal extension DSFAppearanceManager {
 		)
 	}
 }
+
+// MARK: - Observers and Listeners
+
+internal extension DSFAppearanceManager {
+	// Adds an entry to the notification center to call the provided selector with the notification.
+	func addObserver(_ observer: Any, selector aSelector: Selector) {
+		self.notificationCenter.addObserver(
+			observer,
+			selector: aSelector,
+			name: DSFAppearanceManager.AppearanceChangedNotification,
+			object: self
+		)
+	}
+
+	// Adds an entry to the notification center to receive notifications that passed to the provided block.
+	func addObserver(queue: OperationQueue? = nil, using block: @escaping (Notification) -> Void) -> NSObjectProtocol {
+		return NotificationCenter.default.addObserver(
+			forName: DSFAppearanceManager.AppearanceChangedNotification,
+			object: self,
+			queue: queue,
+			using: block
+		)
+	}
+
+	// Removes all entries specifying an observer from the notification center's dispatch table
+	func removeObserver(_ observer: NSObject) {
+		self.notificationCenter.removeObserver(observer)
+	}
+}
+
 
 #endif

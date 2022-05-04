@@ -197,7 +197,7 @@ internal extension NSNotification.Name {
 		isDarkMenu: \(self.isDarkMenu)
 		accentColor: \(self.accentColor)
 		highlightColor: \(self.highlightColor)
-		aquaVariant: \(self.aquaVariant)
+		aquaVariant: \(self.aquaVariant.stringValue)
 		increaseContrast: \(self.increaseContrast)
 		differentiateWithoutColor: \(self.differentiateWithoutColor)
 		reduceTransparency: \(self.reduceTransparency)

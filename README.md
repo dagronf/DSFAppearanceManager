@@ -10,11 +10,14 @@
 
 A class for simplifying macOS appearance values and detecting setting changes (Swift/Objective-C).
 
+Supported back to macOS 10.11 with sensible fallbacks on older systems to reduce the `#available/@available` dance in your code.
+
 ## Why?
 
 If you're performing custom drawing within your macOS app, it's important to obey the user's display and accessibility settings when performing your drawing so you can adapt accordingly.
 
-Secondly, when the user changes their settings (eg. when the system changes automatically light/dark modes) I wanted my app to be notified of the change so I can update the drawing to match the new setting(s).
+1. On different macOS systems, the method for retrieving these values can differ (and on earlier systems are quite difficult to extract reliably). This library wraps away all these inconsistencies so your code can remain clean(er).
+2. When the user changes their settings (eg. when the system changes automatically light/dark modes) I wanted my app to be notified of the change so I can update the drawing to match the new setting(s).
 
 ## Appearance
 
@@ -61,11 +64,9 @@ appearanceChangeDetector.appearanceChangeCallback = { [weak self] manager, chang
 }
 ```
 
-Done!
-
 ### Change detection types
 
-The change object will indicate the type of change that occurred.
+The change object indicates the type of change that occurred.
 
 | Change type                | Description                                               |
 |----------------------------|-----------------------------------------------------------|

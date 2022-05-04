@@ -148,34 +148,54 @@ internal extension NSNotification.Name {
 		}
 	}
 
-	/// Is the UI currently being displayed as dark (Mojave upwards)
+	/// Is the user interface being displayed as dark (Mojave and later)
 	@objc public private(set) var isDark: Bool = DSFAppearanceManager.IsDark
 
-	/// Are the menu and doc currently being displayed as dark (Yosemite upwards)
+	/// Are the menu bars and dock being displayed as dark (Yosemite and later)
 	@objc public private(set) var isDarkMenu: Bool = DSFAppearanceManager.IsDarkMenu
 
-	/// What is the current accent color?
+	/// Returns the user's current accent color
 	@objc public private(set) var accentColor: NSColor = DSFAppearanceManager.AccentColor
 
-	/// What is the current highlight color?
+	/// Returns the user's current highlight color
 	@objc public private(set) var highlightColor: NSColor = DSFAppearanceManager.HighlightColor
 
-	/// What is the current aqua variant color?
+	/// Returns the current aqua variant. (graphite or aqua style on older macOS)
 	@objc public private(set) var aquaVariant: AppleAquaColorVariant = DSFAppearanceManager.AquaVariant
 
-	/// Should the UI be drawn with increased contrast?
+	/// Get the current accessibility display option for high-contrast UI.  If this is true, UI should be presented with high contrast such as utilizing a less subtle color palette or bolder lines.
+	///
+	/// This feature is available from macOS 10.10. For systems prior to 10.10, this property always returns false.
+	///
+	/// See: [`NSWorkspace.shared.accessibilityDisplayShouldIncreaseContrast`](https://developer.apple.com/documentation/appkit/nsworkspace/1526290-accessibilitydisplayshouldincrea).
 	@objc public private(set) var increaseContrast: Bool = DSFAppearanceManager.IncreaseContrast
 
-	/// Should the UI be drawn differentiating without using color?
+	/// Get the current accessibility display option for differentiate without color. If this is true, UI should not convey information using color alone and instead should use shapes or glyphs to convey information.
+	///
+	/// This feature is available from macOS 10.10. For systems prior to 10.10, this property always returns false.
+	///
+	/// See: [`NSWorkspace.shared.accessibilityDisplayShouldDifferentiateWithoutColor`](https://developer.apple.com/documentation/appkit/nsworkspace/1524656-accessibilitydisplayshoulddiffer).
 	@objc public private(set) var differentiateWithoutColor: Bool = DSFAppearanceManager.DifferentiateWithoutColor
 
-	/// Should the UI be drawn with reduced transparency?
+	/// Get the current accessibility display option for reduce transparency. If this property's value is true, UI (mainly window) backgrounds should not be semi-transparent; they should be opaque.
+	///
+	/// This feature is available from macOS 10.10. For systems prior to 10.10, this property always returns false.
+	///
+	/// See: [`NSWorkspace.shared.accessibilityDisplayShouldReduceTransparency`](https://developer.apple.com/documentation/appkit/nsworkspace/1533006-accessibilitydisplayshouldreduce)
 	@objc public private(set) var reduceTransparency: Bool = DSFAppearanceManager.ReduceTransparency
 
-	/// Is the system currently configured to invert the display?
+	/// Get the current accessibility display option for invert colors. If this property's value is true then the display will be inverted. In these cases it may be needed for UI drawing to be adjusted to in order to display optimally when inverted.
+	///
+	/// This feature is available from macOS 10.12. For systems prior to 10.12, this property always returns false.
+	///
+	/// See: [`NSWorkspace.shared.accessibilityDisplayShouldInvertColors`](https://developer.apple.com/documentation/appkit/nsworkspace/1644068-accessibilitydisplayshouldinvert)
 	@objc public private(set) var invertColors: Bool = DSFAppearanceManager.InvertColors
 
-	/// Should we reduce motion within our UI?
+	/// Get the current accessibility display option for reduce motion. If this property's value is true, UI should avoid large animations, especially those that simulate the third dimension.
+	///
+	/// This feature is available from macOS 10.12. For systems prior to 10.12, this property always returns false.
+	///
+	/// See: [`NSWorkspace.shared.accessibilityDisplayShouldReduceMotion`](https://developer.apple.com/documentation/appkit/nsworkspace/1644069-accessibilitydisplayshouldreduce).
 	@objc public private(set) var reduceMotion: Bool = DSFAppearanceManager.ReduceMotion
 
 	init(notificationCenter: NotificationCenter = NotificationCenter.default) {
@@ -337,7 +357,9 @@ internal extension NSNotification.Name {
 
 	/// Get the current accessibility display option for high-contrast UI.  If this is true, UI should be presented with high contrast such as utilizing a less subtle color palette or bolder lines.
 	///
-	/// See: `NSWorkspace.shared.accessibilityDisplayShouldIncreaseContrast`.
+	/// This feature is available from macOS 10.10. For systems prior to 10.10, this property always returns false.
+	///
+	/// See: [`NSWorkspace.shared.accessibilityDisplayShouldIncreaseContrast`](https://developer.apple.com/documentation/appkit/nsworkspace/1526290-accessibilitydisplayshouldincrea).
 	@objc static var IncreaseContrast: Bool {
 		if #available(macOS 10.10, *) {
 			return NSWorkspace.shared.accessibilityDisplayShouldIncreaseContrast
@@ -347,7 +369,9 @@ internal extension NSNotification.Name {
 
 	/// Get the current accessibility display option for differentiate without color. If this is true, UI should not convey information using color alone and instead should use shapes or glyphs to convey information.
 	///
-	/// See: `NSWorkspace.shared.accessibilityDisplayShouldDifferentiateWithoutColor`.
+	/// This feature is available from macOS 10.10. For systems prior to 10.10, this property always returns false.
+	///
+	/// See: [`NSWorkspace.shared.accessibilityDisplayShouldDifferentiateWithoutColor`](https://developer.apple.com/documentation/appkit/nsworkspace/1524656-accessibilitydisplayshoulddiffer).
 	@objc static var DifferentiateWithoutColor: Bool {
 		if #available(macOS 10.10, *) {
 			return NSWorkspace.shared.accessibilityDisplayShouldDifferentiateWithoutColor
@@ -357,7 +381,9 @@ internal extension NSNotification.Name {
 
 	/// Get the current accessibility display option for reduce transparency. If this property's value is true, UI (mainly window) backgrounds should not be semi-transparent; they should be opaque.
 	///
-	/// See: `NSWorkspace.shared.accessibilityDisplayShouldReduceTransparency`
+	/// This feature is available from macOS 10.10. For systems prior to 10.10, this property always returns false.
+	///
+	/// See: [`NSWorkspace.shared.accessibilityDisplayShouldReduceTransparency`](https://developer.apple.com/documentation/appkit/nsworkspace/1533006-accessibilitydisplayshouldreduce)
 	@objc static var ReduceTransparency: Bool {
 		if #available(macOS 10.10, *) {
 			return NSWorkspace.shared.accessibilityDisplayShouldReduceTransparency
@@ -369,7 +395,9 @@ internal extension NSNotification.Name {
 
 	/// Get the current accessibility display option for invert colors. If this property's value is true then the display will be inverted. In these cases it may be needed for UI drawing to be adjusted to in order to display optimally when inverted.
 	///
-	/// See: `NSWorkspace.shared.accessibilityDisplayShouldInvertColors`
+	/// This feature is available from macOS 10.12. For systems prior to 10.12, this property always returns false.
+	///
+	/// See: [`NSWorkspace.shared.accessibilityDisplayShouldInvertColors`](https://developer.apple.com/documentation/appkit/nsworkspace/1644068-accessibilitydisplayshouldinvert)
 	@objc static var InvertColors: Bool {
 		if #available(macOS 10.12, *) {
 			return NSWorkspace.shared.accessibilityDisplayShouldInvertColors
@@ -379,7 +407,9 @@ internal extension NSNotification.Name {
 
 	/// Get the current accessibility display option for reduce motion. If this property's value is true, UI should avoid large animations, especially those that simulate the third dimension.
 	///
-	/// See: `NSWorkspace.shared.accessibilityDisplayShouldReduceMotion`.
+	/// This feature is available from macOS 10.12. For systems prior to 10.12, this property always returns false.
+	///
+	/// See: [`NSWorkspace.shared.accessibilityDisplayShouldReduceMotion`](https://developer.apple.com/documentation/appkit/nsworkspace/1644069-accessibilitydisplayshouldreduce).
 	@objc static var ReduceMotion: Bool {
 		if #available(macOS 10.12, *) {
 			return NSWorkspace.shared.accessibilityDisplayShouldReduceMotion

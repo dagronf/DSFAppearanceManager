@@ -28,28 +28,37 @@
 //    https://chromium.googlesource.com/chromium/src/+/master/content/renderer/theme_helper_mac.mm
 //    https://bugzilla.mozilla.org/show_bug.cgi?id=1062801
 //
-//  Simple example :-
-//
-//   let appearanceCapture = DSFAppearanceManager.ChangeDetector()
-//
-//   appearanceCapture.appearanceChangeCallback = { [weak self] change in
-//      self?.doSomething(change)
-//   }
 
 #if os(macOS)
 
 import AppKit
 
 public extension DSFAppearanceManager {
-	/// Appearance change detector.
+	/// An appearance change detector object.
+	///
+	/// The `ChangeDetector` object receives notifcations from the system when appearance, accessibility and/or
+	/// theme changes occur for the current user (eg. the system changes from dark to light).
+	///
+	/// Simple example :-
+	///
+	/// ```swift
+	/// class MyVisibleView: NSView {
+	///    let appearanceCapture = DSFAppearanceManager.ChangeDetector()
+	/// ...
+	///    init() {
+	///       super.init()
+	///       appearanceCapture.appearanceChangeCallback = { [weak self] change in
+	///          self?.doSomething(change)
+	///    }
+	/// }
 	@objc(DSFAppearanceManagerChangeDetector)
 	class ChangeDetector: NSObject {
-		/// A callback for when the appearance changes.
+		/// A callback for when the appearance changes. Guaranteed to be called on the main thread.
 		///
-		/// Guaranteed to always be called on the main thread
+		/// Note: Make sure to use [weak self] in the block when necessary to avoid retain cycles.
 		@objc public var appearanceChangeCallback: ((DSFAppearanceManager.Change) -> Void)?
 
-		/// Create a change detector
+		/// Create a change detector with no initial callback
 		@objc override public init() {
 			super.init()
 			self.observer = DSFAppearanceManager.shared.addObserver(queue: .main) { [weak self] notify in
@@ -70,6 +79,7 @@ public extension DSFAppearanceManager {
 		}
 
 		/// Create a change detector with an appearance change callback
+		/// - Parameter appearanceChangeCallback: The block to call when the appearance changes
 		@objc public convenience init(appearanceChangeCallback: @escaping ((DSFAppearanceManager.Change) -> Void)) {
 			self.init()
 			self.appearanceChangeCallback = appearanceChangeCallback
@@ -87,6 +97,28 @@ public extension DSFAppearanceManager {
 		@objc private func appearanceDidChange(_ change: DSFAppearanceManager.Change) {
 			assert(Thread.isMainThread)
 			self.appearanceChangeCallback?(change)
+		}
+	}
+}
+
+public extension DSFAppearanceManager {
+	/// The current set of appearance changes that occurred for the current change
+	@objc(DSFAppearanceManagerChange)
+	class Change: NSObject {
+		/// The changes that occurred
+		public private(set) var changes = Set<StyleChangeType>()
+
+		/// The changes that occurred as an NSSet (objc)
+		@objc public var nsChanges: NSSet {
+			return NSSet(set: self.changes)
+		}
+
+		@objc override public var description: String {
+			self.changes.map { $0.name }.joined(separator: ", ")
+		}
+
+		internal func add(change: StyleChangeType) {
+			self.changes.insert(change)
 		}
 	}
 }

@@ -44,7 +44,23 @@ So, for example, to get the current macOS highlight color, call `DSFAppearanceMa
 
 ## Change detection
 
-You can ask to be notified when appearance settings changes.
+You can ask to be notified when appearance settings changes. macOS calls some methods automatically when
+the appearance changes :-
+
+### NSView
+
+* `updateLayer`
+* `drawRect(dirtyRect: NSRect)`
+* `layout`
+* `updateConstraints`
+
+### NSViewController
+
+* `updateViewConstraints`
+* `viewWillLayout`
+* `viewDidLayout`
+
+but there are times where you need to manage this yourself. This is where the `ChangeDetector` class is used.
 
 Declare a variable of type `DSFAppearanceManager.ChangeDetector()`
 
@@ -97,7 +113,62 @@ The `change` object passed in the callback block contains a set of the changes t
 @end
 ```
 
-## Additional info
+## Centralized notifications
+
+If you have lots and lots of little classes that need to be updated, it may be more efficient to centralize the
+change notifications in a common location.
+
+The library provides a default global (lazy) `DSFAppearanceManager.ChangeCenter.shared` object instance you can use,
+or you can manage one yourself.
+
+### DSFAppearanceManager.ChangeCenter 
+
+The change center object `DSFAppearanceManager.ChangeCenter` generates notifications on `NotificationCenter.default`.
+
+**Notification name:** `DSFAppearanceManager.ChangeCenter.ChangeNotification`
+
+**Userinfo key:** `DSFAppearanceManager.ChangeCenter.ChangeObject`
+
+You can register for notifications using the standard `addObserver` mechanisms.
+
+#### Example
+
+```swift
+ self.observer = NotificationCenter.default.addObserver(
+    forName: DSFAppearanceManager.ChangeCenter.ChangeNotification,
+    object: DSFAppearanceManager.ChangeCenter.shared,
+    queue: OperationQueue.main) { notification in
+       let change = notification.userInfo?[DSFAppearanceManager.ChangeObject] as? DSFAppearanceManager.Change
+       // Do something with 'change'
+    }
+```
+
+### Registering objects using the ChangeCenter
+
+You can register an object with a `DSFAppearanceManager.ChangeCenter` object.
+
+The object is held weakly within the shared notifier, so if the object deinits it will automatically
+deregister itself from the appearance change 
+
+#### Example
+
+```swift
+ class LevelGauge: CustomLayer, DSFAppearanceNotifierChangeDetector {
+    init() {
+       DSFAppearanceManager.ChangeCenter.shared.register(self)
+    }
+
+    deinit {
+       DSFAppearanceNotifier.ChangeCenter.shared.deregister(self)
+    }
+
+    func appearanceDidChange(_ change: DSFAppearanceManager.Change) {
+       // Update the object
+    }
+ }
+```
+
+## Additional support
 
 ### `NSView` appearance drawing
 

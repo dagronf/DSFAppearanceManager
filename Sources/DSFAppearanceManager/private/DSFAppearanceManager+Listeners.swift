@@ -34,6 +34,14 @@
 import AppKit
 import Foundation
 
+/// Apple notifications for theme changes
+internal extension NSNotification.Name {
+	static let ThemeChangedNotification = NSNotification.Name("AppleInterfaceThemeChangedNotification")
+	static let AccentChangedNotification = NSNotification.Name("AppleColorPreferencesChangedNotification")
+	static let AquaVariantChangeNotification = NSNotification.Name("AppleAquaColorVariantChanged")
+	static let SystemColorsChangeNotification = NSNotification.Name("NSSystemColorsDidChangeNotification")
+}
+
 internal extension DSFAppearanceManager {
 	func installNotificationListeners() {
 		// Listen for appearance changes
@@ -110,8 +118,6 @@ internal extension DSFAppearanceManager {
 	}
 	
 	private func appearanceDidChange(change: StyleChangeType) {
-		// Swift.print("DSFAppearanceManager: update")
-		
 		// Make sure that these occur on the main queue
 		DispatchQueue.main.async { [weak self] in
 			self?.update(change: change)
@@ -174,6 +180,5 @@ internal extension DSFAppearanceManager {
 		self.notificationCenter.removeObserver(observer)
 	}
 }
-
 
 #endif

@@ -41,7 +41,7 @@ class ViewController: NSViewController {
 		super.viewDidLoad()
 
 		self.changeDetector.appearanceChangeCallback = { [weak self] change in
-			Swift.print("DSFAppearanceManager change detected - \(change)")
+			Swift.print("ViewController[DSFAppearanceManager.ChangeDetector] change detected - \(change)")
 			self?.appearanceDidChange(change)
 		}
 

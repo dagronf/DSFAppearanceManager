@@ -33,14 +33,31 @@
 
 import AppKit
 
-/// Apple notifications for theme changes
-internal extension NSNotification.Name {
-	static let ThemeChangedNotification = NSNotification.Name("AppleInterfaceThemeChangedNotification")
-	static let AccentChangedNotification = NSNotification.Name("AppleColorPreferencesChangedNotification")
-	static let AquaVariantChangeNotification = NSNotification.Name("AppleAquaColorVariantChanged")
-	static let SystemColorsChangeNotification = NSNotification.Name("NSSystemColorsDidChangeNotification")
-}
-
+/// A macOS system-appearance wrapper class.
+///
+/// This class wraps the complexities of accessing the user's current appearance settings,
+/// across all supported macOS platforms.
+///
+/// Example usage :-
+///
+/// ```swift
+/// // Get the current highlight color
+/// let color = DSFAppearanceManager.HighlightColor
+/// // Get the user's current 'reduce contrast' setting.
+/// let isHighContrast = DSFAppearanceManager.IncreaseContrast
+/// ```
+///
+/// Change detection usage (Swift) :-
+///
+/// ```swift
+/// let appearanceChangeDetector = DSFAppearanceManager.ChangeDetector()
+/// ...
+/// appearanceChangeDetector.appearanceChangeCallback = { [weak self] change in
+///   let currentHighlightColor = DSFAppearanceManager.HighlightColor
+///   self?.redrawComponent()
+///   ...
+/// }
+///
 @objc public final class DSFAppearanceManager: NSObject {
 	/// The notification sent when a change occurs in the theme.
 	///
@@ -77,26 +94,6 @@ internal extension NSNotification.Name {
 			case .finderLabelColorsChanged: return "finderLabelColorsChanged"
 			case .accessibility: return "accessibility"
 			}
-		}
-	}
-	
-	/// The current set of appearance changes
-	@objc(DSFAppearanceManagerChange)
-	public class Change: NSObject {
-		/// The changes that occurred
-		public private(set) var changes = Set<StyleChangeType>()
-		
-		/// The changes that occurred as an NSSet (objc)
-		@objc public var nsChanges: NSSet {
-			return NSSet(set: self.changes)
-		}
-		
-		@objc override public var description: String {
-			self.changes.map { $0.name }.joined(separator: ", ")
-		}
-		
-		internal func add(change: StyleChangeType) {
-			self.changes.insert(change)
 		}
 	}
 	
@@ -145,7 +142,7 @@ internal extension NSNotification.Name {
 	}
 
 	// A shared appearance manager
-	internal static let shared = DSFAppearanceManager()
+	@objc public static let shared = DSFAppearanceManager()
 
 	// The distributed notification center to listen to for some of the notification types
 	internal let distributedNotificationCenter = DistributedNotificationCenter.default()

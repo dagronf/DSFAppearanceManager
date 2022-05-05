@@ -7,8 +7,9 @@
 
 #import "AppDelegate.h"
 
-@interface AppDelegate ()
+@import DSFAppearanceManager;
 
+@interface AppDelegate () <DSFAppearanceManagerChangeCenterDetector>
 
 @end
 
@@ -16,16 +17,22 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
 	// Insert code here to initialize your application
+	[[DSFAppearanceManagerChangeCenter shared] register: self];
 }
 
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
 	// Insert code here to tear down your application
+	[[DSFAppearanceManagerChangeCenter shared] deregister: self];
 }
 
 
 - (BOOL)applicationSupportsSecureRestorableState:(NSApplication *)app {
 	return YES;
+}
+
+- (void)appearanceDidChange: (DSFAppearanceManagerChange*)change {
+	NSLog(@"AppDelegate[register]: AppearanceDidChange");
 }
 
 

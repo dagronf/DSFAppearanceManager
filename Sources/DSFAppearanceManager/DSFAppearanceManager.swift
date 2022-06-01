@@ -192,9 +192,14 @@ private extension DSFAppearanceManager {
 	/// Is the user interface being displayed as dark (Mojave and later)
 	static var IsDark: Bool {
 		if #available(OSX 10.14, *) {
-			if let style = UserDefaults.standard.string(forKey: DSFAppearanceManager.kInterfaceStyle) {
-				return style.lowercased().contains("dark")
-			}
+			// Fall back to the default NSApp.effectiveAppearance setting.
+			// Note that this might not always be accurate as the app may have explicitly set the effective appearance.
+			return NSApp.effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+//			// The UserDefaults doesn't always seem to be set when the appearance changes. For example, setting the
+//			// mode via the Shortcuts app doesn't set it, but via System Preferences does. Don't know why.
+//			if let style = UserDefaults.standard.string(forKey: DSFAppearanceManager.kInterfaceStyle) {
+//				return style.lowercased().contains("dark")
+//			}
 		}
 		return false
 	}
@@ -204,7 +209,7 @@ private extension DSFAppearanceManager {
 		if let style = UserDefaults.standard.string(forKey: DSFAppearanceManager.kInterfaceStyle) {
 			return style.lowercased().contains("dark")
 		}
-		return false
+		return Self.IsDark
 	}
 	
 	/// Returns the user's current accent color

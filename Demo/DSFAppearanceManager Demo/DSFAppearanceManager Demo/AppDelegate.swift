@@ -16,14 +16,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 	func applicationDidFinishLaunching(_ aNotification: Notification) {
 		// Insert code here to initialize your application
 
-		DSFAppearanceManager.ChangeCenter.shared.register(self)
-
 		self.observer = NotificationCenter.default.addObserver(
-			forName: DSFAppearanceManager.ChangeCenter.ChangeNotification,
-			object: DSFAppearanceManager.ChangeCenter.shared,
+			forName: DSFAppearanceCache.ChangeNotificationName,
+			object: DSFAppearanceManager.shared,
 			queue: OperationQueue.main) { notification in
-				let change = notification.userInfo?[DSFAppearanceManager.ChangeCenter.ChangeObject] as! DSFAppearanceManager.Change
-				Swift.print("AppDelegate[NotificationCenter] - appearance did change (\(change))")
+				Swift.print("AppDelegate[NotificationCenter] - appearance did change")
 			}
 
 	}
@@ -39,8 +36,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
 }
 
-extension AppDelegate: DSFAppearanceManagerChangeCenterDetector {
-	func appearanceDidChange(_ change: DSFAppearanceManager.Change) {
-		Swift.print("AppDelegate[RegisteredObject] - appearance did change (\(change))")
+extension AppDelegate: DSFAppearanceCacheNotifiable {
+	func appearanceDidChange() {
+		Swift.print("AppDelegate[RegisteredObject] - appearance did change")
 	}
 }

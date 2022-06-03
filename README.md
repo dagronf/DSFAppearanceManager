@@ -113,60 +113,57 @@ The `change` object passed in the callback block contains a set of the changes t
 @end
 ```
 
-## Centralized notifications
+## Centralized notifications (DSFAppearanceCache)
 
-If you have lots and lots of little classes that need to be updated, it may be more efficient to centralize the
-change notifications in a common location.
+If you have lots and lots of little classes that need to be updated, it may be more efficient to centralize the change notifications in a common location.
 
-The library provides a default global (lazy) `DSFAppearanceManager.ChangeCenter.shared` object instance you can use,
-or you can manage one yourself.
+The library provides a default global (lazy) `DSFAppearanceCache.shared` object instance you can use,
+or you can create and manage one yourself.
 
-### DSFAppearanceManager.ChangeCenter 
+The appearance cache provides two mechanisms for receiving appearance update notifications.
 
-The change center object `DSFAppearanceManager.ChangeCenter` generates notifications on `NotificationCenter.default`.
+### Register for updates directly with the cache 
 
-**Notification name:** `DSFAppearanceManager.ChangeCenter.ChangeNotification`
+You can register an object to receive appearance updates by conforming your object to the `DSFAppearanceCacheNotifiable` protocol.  The object is held weakly within the cache object.
 
-**Userinfo key:** `DSFAppearanceManager.ChangeCenter.ChangeObject`
+#### Example
+
+```swift
+class LevelGauge: CustomLayer, DSFAppearanceCacheNotifiable {
+   init() {
+      DSFAppearanceCache.shared.register(self)
+   }
+
+   deinit {
+      DSFAppearanceCache.shared.deregister(self)
+   }
+
+   func appearanceDidChange() {
+      // Update the object
+   }
+}
+```
+
+### Register for updates via NotificationCenter
+
+The change center object `DSFAppearanceCache` generates notifications on `NotificationCenter.default`.
+
+**Notification name:** `DSFAppearanceCache.ChangeNotificationName`
 
 You can register for notifications using the standard `addObserver` mechanisms.
 
 #### Example
 
 ```swift
- self.observer = NotificationCenter.default.addObserver(
-    forName: DSFAppearanceManager.ChangeCenter.ChangeNotification,
-    object: DSFAppearanceManager.ChangeCenter.shared,
-    queue: OperationQueue.main) { notification in
-       let change = notification.userInfo?[DSFAppearanceManager.ChangeObject] as? DSFAppearanceManager.Change
-       // Do something with 'change'
-    }
+self.observer = NotificationCenter.default.addObserver(
+   forName: DSFAppearanceCache.ChangeNotificationName,
+   object: DSFAppearanceCache.shared,
+   queue: OperationQueue.main) { _ in
+      // Do something with the change
+}
 ```
 
-### Registering objects using the ChangeCenter
-
-You can register an object with a `DSFAppearanceManager.ChangeCenter` object.
-
-The object is held weakly within the shared notifier, so if the object deinits it will automatically
-deregister itself from the appearance change 
-
-#### Example
-
-```swift
- class LevelGauge: CustomLayer, DSFAppearanceNotifierChangeDetector {
-    init() {
-       DSFAppearanceManager.ChangeCenter.shared.register(self)
-    }
-
-    deinit {
-       DSFAppearanceNotifier.ChangeCenter.shared.deregister(self)
-    }
-
-    func appearanceDidChange(_ change: DSFAppearanceManager.Change) {
-       // Update the object
-    }
- }
-```
+Make sure to keep the code in your 'appearanceDidChange' fast!
 
 ## Additional support
 
@@ -203,6 +200,8 @@ And because `DynamicColor` inherits from `NSColor`, it can be used wherever `NSC
 ## Thanks!
 
 [`ChimeHQ`](https://github.com/ChimeHQ) for developing the awesome [dynamic NSColor subclass](https://github.com/ChimeHQ/Dusk).
+
+## Releases
 
 ## License
 

@@ -8,9 +8,7 @@
 import Cocoa
 import DSFAppearanceManager
 
-class ViewController: NSViewController {
-
-	let changeDetector = DSFAppearanceManager.ChangeDetector()
+class ViewController: NSViewController, DSFAppearanceCacheNotifiable {
 
 	@IBOutlet weak var isDarkImage: NSImageView!
 
@@ -39,17 +37,14 @@ class ViewController: NSViewController {
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
-
-		self.changeDetector.appearanceChangeCallback = { [weak self] change in
-			Swift.print("ViewController[DSFAppearanceManager.ChangeDetector] change detected - \(change)")
-			self?.appearanceDidChange(change)
-		}
-
 		self.update()
 
+		// Register for appearance updates
+		DSFAppearanceCache.shared.register(self)
 	}
 
-	func appearanceDidChange(_ change: DSFAppearanceManager.Change) {
+	func appearanceDidChange() {
+		Swift.print("ViewController: appearance did change...")
 		self.update()
 	}
 

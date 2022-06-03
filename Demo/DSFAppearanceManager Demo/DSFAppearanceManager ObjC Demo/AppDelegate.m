@@ -9,7 +9,7 @@
 
 @import DSFAppearanceManager;
 
-@interface AppDelegate () <DSFAppearanceManagerChangeCenterDetector>
+@interface AppDelegate () <DSFAppearanceCacheNotifiable>
 
 @end
 
@@ -17,13 +17,13 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
 	// Insert code here to initialize your application
-	[[DSFAppearanceManagerChangeCenter shared] register: self];
+	[[DSFAppearanceCache shared] register: self];
 }
 
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
 	// Insert code here to tear down your application
-	[[DSFAppearanceManagerChangeCenter shared] deregister: self];
+	[[DSFAppearanceCache shared] deregister: self];
 }
 
 
@@ -31,7 +31,7 @@
 	return YES;
 }
 
-- (void)appearanceDidChange: (DSFAppearanceManagerChange*)change {
+- (void)appearanceDidChange {
 	NSLog(@"AppDelegate[register]: AppearanceDidChange");
 }
 

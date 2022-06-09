@@ -144,7 +144,6 @@ import Foundation
 		if #available(macOS 10.12, *) {
 			return UnfairLock()
 		} else {
-			// Supported prior to 10.12
 			return PThreadLock()
 		}
 	}

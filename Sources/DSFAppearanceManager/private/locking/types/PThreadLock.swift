@@ -1,7 +1,7 @@
 //
 //  PThreadLock.swift
 //
-//  Created by Darren Ford on 27/12/2021.
+//  Copyright © 2022 Darren Ford. All rights reserved.
 //
 //  MIT license
 //
@@ -28,100 +28,45 @@ import Foundation
 
 /// A non-reentrant pthread-based lock
 class PThreadLock: Lockable {
+	init(isReentrant: Bool = false) {
+		let mutexAttributes: UnsafeMutablePointer<pthread_mutexattr_t> = UnsafeMutablePointer.allocate(capacity: 1)
+		defer {
+			pthread_mutexattr_destroy(mutexAttributes)
+			mutexAttributes.deallocate()
+		}
 
-	enum LockError: Error {
-		case UnableToLock(Int32)
+		var err = pthread_mutexattr_init(mutexAttributes)
+		precondition(err == 0, "pthread_mutexattr_init failed with error '\(err)'")
+		err = pthread_mutexattr_settype(mutexAttributes, isReentrant ? PTHREAD_MUTEX_RECURSIVE : PTHREAD_MUTEX_DEFAULT)
+		precondition(err == 0, "pthread_mutexattr_settype failed with error '\(err)'")
+		err = pthread_mutex_init(self._mutex, mutexAttributes)
+		precondition(err == 0, "pthread_mutex_init failed with error '\(err)'")
 	}
 
-	@inlinable func whileLocked<ReturnValueType>(_ contentBlock: () throws -> ReturnValueType) rethrows -> ReturnValueType {
-		let err = pthread_mutex_lock(&self._mutex)
-		if err != 0 {
-			fatalError("Unable to lock (\(err))")
-		}
-		defer { pthread_mutex_unlock(&self._mutex) }
+	deinit {
+		let err = pthread_mutex_destroy(self._mutex)
+		precondition(err == 0, "pthread_mutex_destroy failed with error \(err)")
+		self._mutex.deallocate()
+	}
+
+	/// Lock, then perform the specified block
+	func whileLocked<ReturnValueType>(_ contentBlock: () throws -> ReturnValueType) rethrows -> ReturnValueType {
+		let err = pthread_mutex_lock(self._mutex)
+		precondition(err == 0, "pthread_mutex_lock: Unable to lock (\(err))")
+		defer { pthread_mutex_unlock(self._mutex) }
 		return try contentBlock()
 	}
 
-	@inlinable func performIfLockable(_ contentBlock: () throws -> Void) rethrows -> Bool {
-		if pthread_mutex_trylock(&self._mutex) == 0 {
-			defer { pthread_mutex_unlock(&self._mutex) }
+	/// Performs the specified block If the lock can be aquired
+	func performIfLockable(_ contentBlock: () throws -> Void) rethrows -> Bool {
+		if pthread_mutex_trylock(self._mutex) == 0 {
+			defer { pthread_mutex_unlock(self._mutex) }
 			try contentBlock()
 			return true
 		}
 		return false
 	}
 
-	init() {
-		var attr = pthread_mutexattr_t()
-		var err = pthread_mutexattr_init(&attr)
-		guard err == 0 else { fatalError("pthread_mutexattr_init failed with error '\(err)'") }
-
-		// Make sure that our thread is NOT reentrant
-		err = pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_DEFAULT)
-		guard err == 0 else { fatalError("pthread_mutexattr_settype failed with error '\(err)'") }
-
-		err = pthread_mutex_init(&self._mutex, &attr)
-		guard err == 0 else { fatalError("pthread_mutex_init failed with error '\(err)'") }
-		pthread_mutexattr_destroy(&attr)
-	}
-
-	deinit {
-		assert(pthread_mutex_trylock(&self._mutex) == 0 && pthread_mutex_unlock(&self._mutex) == 0, "deinitialization of a locked mutex results in undefined behavior!")
-		pthread_mutex_destroy(&self._mutex)
-	}
-
 	// private
-
-	private var _mutex: pthread_mutex_t = pthread_mutex_t()
+	private let _mutex: UnsafeMutablePointer<pthread_mutex_t> = UnsafeMutablePointer.allocate(capacity: 1)
 }
-
-/// A revursive (reentrant) pthread-based lock
-class PThreadRecursiveLock: Lockable {
-
-	enum LockError: Error {
-		case UnableToLock(Int32)
-	}
-
-	@inlinable func whileLocked<ReturnValueType>(_ contentBlock: () throws -> ReturnValueType) rethrows -> ReturnValueType {
-		let err = pthread_mutex_lock(&self._mutex)
-		if err != 0 {
-			fatalError("Unable to lock (\(err))")
-		}
-		defer { pthread_mutex_unlock(&self._mutex) }
-		return try contentBlock()
-	}
-
-	@inlinable func performIfLockable(_ contentBlock: () throws -> Void) rethrows -> Bool {
-		if pthread_mutex_trylock(&self._mutex) == 0 {
-			defer { pthread_mutex_unlock(&self._mutex) }
-			try contentBlock()
-			return true
-		}
-		return false
-	}
-
-	init() {
-		var attr = pthread_mutexattr_t()
-		var err = pthread_mutexattr_init(&attr)
-		guard err == 0 else { fatalError("pthread_mutexattr_init failed with error '\(err)'") }
-
-		// Make sure we set recursive
-		err = pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE)
-		guard err == 0 else { fatalError("pthread_mutexattr_settype failed with error '\(err)'") }
-
-		err = pthread_mutex_init(&self._mutex, &attr)
-		guard err == 0 else { fatalError("pthread_mutex_init failed with error '\(err)'") }
-		pthread_mutexattr_destroy(&attr)
-	}
-
-	deinit {
-		assert(pthread_mutex_trylock(&self._mutex) == 0 && pthread_mutex_unlock(&self._mutex) == 0, "deinitialization of a locked mutex results in undefined behavior!")
-		pthread_mutex_destroy(&self._mutex)
-	}
-
-	// private
-
-	private var _mutex: pthread_mutex_t = pthread_mutex_t()
-}
-
-

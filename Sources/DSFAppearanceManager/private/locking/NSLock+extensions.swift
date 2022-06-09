@@ -1,7 +1,7 @@
 //
 //  NSLock+extensions.swift
 //
-//  Created by Darren Ford on 18/3/2022.
+//  Copyright © 2022 Darren Ford. All rights reserved.
 //
 //  MIT license
 //

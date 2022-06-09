@@ -1,8 +1,7 @@
 //
 //  Atomic.swift
 //
-//  Atomic class from https://www.objc.io/blog/2018/12/18/atomic-variables/
-//  Created by Darren Ford on 28/11/19.
+//  Copyright © 2022 Darren Ford. All rights reserved.
 //
 //  MIT license
 //
@@ -24,6 +23,7 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 //  IN THE SOFTWARE.
 //
+//  Inspired by https://www.objc.io/blog/2018/12/18/atomic-variables/
 
 import Foundation
 
@@ -37,8 +37,8 @@ class Atomic<WrappedValue> {
 		if #available(macOS 10.12, *) {
 			self.lock = lockable ?? UnfairLock()
 		} else {
-			// Basic NSLock (slower)
-			self.lock = lockable ?? BasicLock()
+			// pthread lock (slower)
+			self.lock = lockable ?? PThreadLock()
 		}
 		self._resource = resource
 	}

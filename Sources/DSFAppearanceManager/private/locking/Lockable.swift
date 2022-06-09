@@ -1,8 +1,7 @@
 //
 //  Lockable.swift
 //
-//  Atomic class from https://www.objc.io/blog/2018/12/18/atomic-variables/
-//  Created by Darren Ford on 28/11/19.
+//  Copyright © 2022 Darren Ford. All rights reserved.
 //
 //  MIT license
 //

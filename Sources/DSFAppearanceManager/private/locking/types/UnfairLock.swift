@@ -1,7 +1,7 @@
 //
 //  UnfairLock.swift
 //
-//  Created by Darren Ford on 27/12/2021.
+//  Copyright © 2022 Darren Ford. All rights reserved.
 //
 //  MIT license
 //
@@ -37,6 +37,14 @@ import Foundation
 /// lock implementation relies on the address of the lock value and owning process.
 @available(macOS 10.12, iOS 10, tvOS 10, *)
 class UnfairLock: Lockable {
+	init() {
+		self._underlyingLock.initialize(to: os_unfair_lock())
+	}
+
+	deinit {
+		self._underlyingLock.deinitialize(count: 1)
+		self._underlyingLock.deallocate()
+	}
 
 	/// Obtain the lock and perform the block
 	@inlinable func whileLocked<ReturnValueType>(_ contentBlock: () throws -> ReturnValueType) rethrows -> ReturnValueType {
@@ -48,8 +56,8 @@ class UnfairLock: Lockable {
 	/// Try to obtain the lock, and if successful perform the contentBlock and return true.
 	/// If the lock is unavailable, return false
 	@discardableResult @inlinable func performIfLockable(_ contentBlock: () throws -> Void) rethrows -> Bool {
-		if unbalancedTryLock() {
-			defer { unbalancedUnlock() }
+		if self.unbalancedTryLock() {
+			defer { self.unbalancedUnlock() }
 			try contentBlock()
 			return true
 		}
@@ -57,33 +65,23 @@ class UnfairLock: Lockable {
 	}
 
 	// Private
-	fileprivate var _underlyingLock = os_unfair_lock()
+	private let _underlyingLock = UnsafeMutablePointer<os_unfair_lock>.allocate(capacity: 1)
 }
 
 @available(macOS 10.12, iOS 10, tvOS 10, *)
 extension UnfairLock {
 	/// Lock the lock
 	@inlinable @inline(__always) func unbalancedLock() {
-		os_unfair_lock_lock(&_underlyingLock)
+		os_unfair_lock_lock(self._underlyingLock)
 	}
 
 	/// Returns true if the lock was succesfully locked and false if the lock was already locked.
 	@inlinable @inline(__always) func unbalancedTryLock() -> Bool {
-		return os_unfair_lock_trylock(&_underlyingLock)
+		return os_unfair_lock_trylock(self._underlyingLock)
 	}
 
 	/// Unlock the lock
 	@inlinable @inline(__always) func unbalancedUnlock() {
-		os_unfair_lock_unlock(&_underlyingLock)
+		os_unfair_lock_unlock(self._underlyingLock)
 	}
-}
-
-///
-
-/// Begin synchronizing on 'obj'. Allocates recursive pthread_mutex associated with 'obj' if needed
-@discardableResult
-@inlinable func obj_sync_block<ResultType>(_ obj: Any, _ block: () throws -> ResultType) rethrows -> ResultType {
-	objc_sync_enter(obj)
-	defer { objc_sync_exit(obj) }
-	return try block()
 }

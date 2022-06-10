@@ -24,12 +24,11 @@
 
 import AppKit
 
-// MARK: - Effective appearance drawing
+// MARK: - NSView
 
 /// Perform a block using the effective appearance settings of view
 ///
 /// See [Discussion](https://dagronf.wordpress.com/2020/08/20/my-nscolor-colorset-colors-arent-changing-when-going-dark/)
-@inlinable
 public func UsingEffectiveAppearance(of view: NSView, perform block: (NSAppearance) throws -> Void) rethrows {
 	if #available(macOS 11.0, *) {
 		view.effectiveAppearance.performAsCurrentDrawingAppearance {
@@ -50,9 +49,29 @@ public extension NSView {
 	/// Perform a block using the effective appearance settings of view
 	///
 	/// See [Discussion](https://dagronf.wordpress.com/2020/08/20/my-nscolor-colorset-colors-arent-changing-when-going-dark/)
-	@inlinable
+	@inlinable @inline(__always)
 	func performUsingEffectiveAppearance(_ block: (NSAppearance) throws -> Void) rethrows {
 		try UsingEffectiveAppearance(of: self, perform: block)
+	}
+}
+
+// MARK: - NSWindow
+
+public func UsingEffectiveAppearance(ofWindow window: NSWindow? = nil, perform block: (NSAppearance) throws -> Void) rethrows {
+	let saved = NSAppearance.current
+	if #available(macOS 10.14, *) {
+		// Adopt the color of the window we're attached tom or if the window is nil the application appearance
+		NSAppearance.current = window?.effectiveAppearance ?? NSApplication.shared.effectiveAppearance
+	}
+	try block(NSAppearance.current)
+	NSAppearance.current = saved
+}
+
+public extension NSWindow {
+	/// Perform the supplied block using the effective appearance of this window
+	@inlinable @inline(__always)
+	func performUsingEffectiveAppearance(_ block: (NSAppearance) throws -> Void) rethrows {
+		try UsingEffectiveAppearance(ofWindow: self, perform: block)
 	}
 }
 

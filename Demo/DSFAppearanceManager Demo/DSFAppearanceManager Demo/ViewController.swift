@@ -49,7 +49,7 @@ class ViewController: NSViewController, DSFAppearanceCacheNotifiable {
 	}
 
 	func update() {
-		self.view.performUsingEffectiveAppearance { appearance in
+		self.view.usingEffectiveAppearance {
 			isDarkImage.image = DSFAppearanceManager.IsDark ? imageYes : imageNo
 			isDarkMenuImage.image = DSFAppearanceManager.IsDarkMenu ? imageYes : imageNo
 
@@ -64,8 +64,6 @@ class ViewController: NSViewController, DSFAppearanceCacheNotifiable {
 			reduceMotionImage.image = DSFAppearanceManager.ReduceMotion ? imageYes : imageNo
 		}
 	}
-
-
 
 	override var representedObject: Any? {
 		didSet {

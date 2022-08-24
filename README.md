@@ -174,9 +174,8 @@ Make sure to keep the code in your 'appearanceDidChange' fast!
 ```swift
 func drawRect(_ dirtyRect: CGRect) {
    ...
-   self.performUsingEffectiveAppearance { appearance in
-      // Do your drawing using 'appearance'
-      // Requests for dynamic colors etc. will automatically use the correct appearance for the view.
+   self.usingEffectiveAppearance {
+      // Requests for dynamic colors etc. within the block will automatically use the correct appearance for the view.
    }
 }
 ```

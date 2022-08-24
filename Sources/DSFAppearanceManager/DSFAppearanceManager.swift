@@ -64,10 +64,10 @@ import AppKit
 	/// The userInfo contains the change type(s) as an via the key DSFAppearanceManager.AppearanceChangedNotification,
 	/// as a `DSFAppearanceManager.Changes` object
 	internal static let AppearanceChangedNotification = NSNotification.Name("DSFAppearanceManager.AppearanceChangedNotification")
-	
+
 	/// Key for the notification containing the type(s) of changes that occured.
 	internal static let AppearanceManagerChange = "DSFAppearanceManagerChange"
-	
+
 	/// The type of a change that occurred
 	@objc(DSFAppearanceManagerStyleChangeType)
 	public enum StyleChangeType: Int {
@@ -83,7 +83,7 @@ import AppKit
 		case finderLabelColorsChanged = 4
 		/// Accessibility display settings changed
 		case accessibility = 5
-		
+
 		/// Returns the string representation of the value
 		public var name: String {
 			switch self {
@@ -96,7 +96,7 @@ import AppKit
 			}
 		}
 	}
-	
+
 	/// The aqua variant for older macOS versions
 	@objc(DSFAppearanceManagerAquaColorVariant)
 	public enum AppleAquaColorVariant: Int {
@@ -110,7 +110,7 @@ import AppKit
 			}
 		}
 	}
-	
+
 	/// Returns a string description of the current appearance settings
 	@objc public static var Description: String {
 		"""
@@ -127,7 +127,7 @@ import AppKit
 		   reduceMotion: \(Self.ReduceMotion)
 		"""
 	}
-	
+
 	// Private
 
 	override internal init() {
@@ -146,13 +146,13 @@ import AppKit
 
 	// The distributed notification center to listen to for some of the notification types
 	internal let distributedNotificationCenter = DistributedNotificationCenter.default()
-	
+
 	// The notification center to post updates on
 	internal var notificationCenter: NotificationCenter
-	
+
 	internal let debouncer = DSFDebounce(seconds: 0.1)
 	internal var queuedChanges = Change()
-	
+
 	fileprivate static let kInterfaceStyle = "AppleInterfaceStyle"
 	fileprivate static let kHighlightStyle = "AppleHighlightColor"
 	fileprivate static let kAccentColor = "AppleAccentColor"
@@ -174,7 +174,7 @@ private extension DSFAppearanceManager {
 		default: return self.DefaultColor
 		}
 	}
-	
+
 	// Default color (has changed in Big Sur)
 	private static var DefaultColor: NSColor {
 		if #available(macOS 11.0, *) {
@@ -203,7 +203,7 @@ private extension DSFAppearanceManager {
 		}
 		return false
 	}
-	
+
 	/// Are the menu bars and dock being displayed as dark (Yosemite and later)
 	static var IsDarkMenu: Bool {
 		if let style = UserDefaults.standard.string(forKey: DSFAppearanceManager.kInterfaceStyle) {
@@ -211,14 +211,14 @@ private extension DSFAppearanceManager {
 		}
 		return Self.IsDark
 	}
-	
+
 	/// Returns the user's current accent color
 	static var AccentColor: NSColor {
 		if #available(OSX 10.14, *) {
 			// macOS 10.14 and above have a dedicated static NSColor
 			return NSColor.controlAccentColor
 		}
-		
+
 		// Use standard user defaults for anything lower than 10.14
 		let userDefaults = UserDefaults.standard
 		guard userDefaults.object(forKey: kAccentColor) != nil else {
@@ -226,40 +226,40 @@ private extension DSFAppearanceManager {
 			//  Post-11.0, uses application-defined accent color if provided (SwiftUI only?), else blue
 			return Self.DefaultColor
 		}
-		
+
 		return ColorForInt(userDefaults.integer(forKey: kAccentColor))
 	}
-	
+
 	/// Returns the user's current highlight color
 	static var HighlightColor: NSColor {
 		let ud = UserDefaults.standard
-		
+
 		guard let setting = ud.string(forKey: DSFAppearanceManager.kHighlightStyle) else {
 			return NSColor.systemGray
 		}
-		
+
 		let c = setting.components(separatedBy: " ")
 		guard let r = Float(c[0]), let g = Float(c[1]), let b = Float(c[2]) else {
 			return NSColor.systemGray
 		}
-		
+
 		return NSColor(calibratedRed: CGFloat(r), green: CGFloat(g), blue: CGFloat(b), alpha: 1.0)
 	}
-	
+
 	/// Returns the current aqua variant. (graphite or aqua style on older macOS)
 	static var AquaVariant: AppleAquaColorVariant {
 		let userDefaults = UserDefaults.standard
 		guard userDefaults.object(forKey: DSFAppearanceManager.kAquaVariantColor) != nil else {
 			return AppleAquaColorVariant.blue
 		}
-		
+
 		let colorDef = userDefaults.integer(forKey: DSFAppearanceManager.kAquaVariantColor)
 		guard let variant = AppleAquaColorVariant(rawValue: colorDef) else {
 			return AppleAquaColorVariant.blue
 		}
 		return variant
 	}
-	
+
 	/// Get the current accessibility display option for high-contrast UI.  If this is true, UI should be presented with high contrast such as utilizing a less subtle color palette or bolder lines.
 	///
 	/// This feature is available from macOS 10.10. For systems prior to 10.10, this property always returns false.
@@ -271,7 +271,7 @@ private extension DSFAppearanceManager {
 		}
 		return false
 	}
-	
+
 	/// Get the current accessibility display option for differentiate without color. If this is true, UI should not convey information using color alone and instead should use shapes or glyphs to convey information.
 	///
 	/// This feature is available from macOS 10.10. For systems prior to 10.10, this property always returns false.
@@ -283,7 +283,7 @@ private extension DSFAppearanceManager {
 		}
 		return false
 	}
-	
+
 	/// Get the current accessibility display option for reduce transparency. If this property's value is true, UI (mainly window) backgrounds should not be semi-transparent; they should be opaque.
 	///
 	/// This feature is available from macOS 10.10. For systems prior to 10.10, this property always returns false.
@@ -297,7 +297,7 @@ private extension DSFAppearanceManager {
 			return false
 		}
 	}
-	
+
 	/// Get the current accessibility display option for invert colors. If this property's value is true then the display will be inverted. In these cases it may be needed for UI drawing to be adjusted to in order to display optimally when inverted.
 	///
 	/// This feature is available from macOS 10.12. For systems prior to 10.12, this property always returns false.
@@ -309,7 +309,7 @@ private extension DSFAppearanceManager {
 		}
 		return false
 	}
-	
+
 	/// Get the current accessibility display option for reduce motion. If this property's value is true, UI should avoid large animations, especially those that simulate the third dimension.
 	///
 	/// This feature is available from macOS 10.12. For systems prior to 10.12, this property always returns false.

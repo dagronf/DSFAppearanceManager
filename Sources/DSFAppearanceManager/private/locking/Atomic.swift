@@ -34,7 +34,7 @@ class Atomic<WrappedValue> {
 	///   - resource: The resource to protect
 	///   - lockable: The locking mechanism to use
 	init(_ resource: WrappedValue, lockable: Lockable? = nil) {
-		if #available(macOS 10.12, *) {
+		if #available(macOS 10.12, iOS 10, tvOS 11, watchOS 3.0, *) {
 			self.lock = lockable ?? UnfairLock()
 		} else {
 			// pthread lock (slower)

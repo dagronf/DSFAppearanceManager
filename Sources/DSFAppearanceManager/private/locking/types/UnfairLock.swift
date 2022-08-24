@@ -35,7 +35,7 @@ import Foundation
 ///
 /// A lock must not be accessed from multiple processes or threads via shared or multiply-mapped memory, because the
 /// lock implementation relies on the address of the lock value and owning process.
-@available(macOS 10.12, iOS 10, tvOS 10, *)
+@available(macOS 10.12, iOS 10, tvOS 10, watchOS 3, *)
 class UnfairLock: Lockable {
 	init() {
 		self._underlyingLock.initialize(to: os_unfair_lock())
@@ -68,7 +68,7 @@ class UnfairLock: Lockable {
 	private let _underlyingLock = UnsafeMutablePointer<os_unfair_lock>.allocate(capacity: 1)
 }
 
-@available(macOS 10.12, iOS 10, tvOS 10, *)
+@available(macOS 10.12, iOS 10, tvOS 10, watchOS 3, *)
 extension UnfairLock {
 	/// Lock the lock
 	@inlinable @inline(__always) func unbalancedLock() {

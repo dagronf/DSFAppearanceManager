@@ -28,6 +28,8 @@
 //    https://bugzilla.mozilla.org/show_bug.cgi?id=1062801
 //
 
+#if os(macOS)
+
 import AppKit
 import Foundation
 
@@ -177,3 +179,5 @@ import Foundation
 		NotificationCenter.default.post(name: Self.ChangeNotificationName, object: self, userInfo: nil)
 	}
 }
+
+#endif

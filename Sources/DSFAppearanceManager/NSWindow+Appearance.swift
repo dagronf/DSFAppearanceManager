@@ -37,4 +37,22 @@ public extension NSWindow {
 	}
 }
 
+/// Perform the supplied block using the effective appearance of the window, or the application if the window is nil
+public func UsingEffectiveAppearance(
+	ofWindow window: NSWindow? = nil,
+	perform block: () -> Void
+) {
+	let saved = NSAppearance.current
+	defer { NSAppearance.current = saved }
+	if #available(macOS 10.14, *) {
+		// Adopt the color of the window we're attached tom or if the window is nil the application appearance
+		let appearance = window?.effectiveAppearance ?? NSApplication.shared.effectiveAppearance
+		appearance.usingAsDrawingAppearance {
+			block()
+		}
+	}
+	block()
+}
+
+
 #endif

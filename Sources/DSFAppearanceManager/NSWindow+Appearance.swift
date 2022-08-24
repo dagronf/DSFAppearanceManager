@@ -51,7 +51,9 @@ public func UsingEffectiveAppearance(
 			block()
 		}
 	}
-	block()
+	else {
+		block()
+	}
 }
 
 

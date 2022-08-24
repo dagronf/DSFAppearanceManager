@@ -32,25 +32,6 @@ import Foundation
 /// By default, the bag is not protected against changes from different threads.
 /// You can optionally specify a Lockable which will be used to make the bag thread-safe.
 class WeakBag<Element: AnyObject> {
-
-	// Create a bag using a particular locking mechanism
-	init(lock: Lockable) {
-		self._lockable = lock
-		self._elements = [ ]
-	}
-
-	// Create a bag containing a single element
-	init(_ element: Element, usingLock lock: Lockable? = nil) {
-		self._lockable = lock ?? NoLock()
-		self._elements = [ WeakBox(element) ]
-	}
-
-	// Create a bag of elements
-	init(_ elements: [Element] = [], usingLock lock: Lockable? = nil) {
-		self._lockable = lock ?? NoLock()
-		self._elements = elements.compactMap { WeakBox($0) }
-	}
-
 	// Returns the count of the valid elements in the bag
 	@inlinable var validCount: Int {
 		self.validElements.count
@@ -97,6 +78,6 @@ class WeakBag<Element: AnyObject> {
 		self.removeAll()
 	}
 
-	private let _lockable: Lockable
-	private var _elements: [WeakBox<Element>]
+	private let _lockable = DSFSimpleLock()
+	private var _elements: [WeakBox<Element>] = []
 }

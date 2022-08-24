@@ -140,19 +140,9 @@ import Foundation
 		self.listeners.remove(obj)
 	}
 
-	// Private
-
-	private static func DefaultLockType() -> Lockable {
-		if #available(macOS 10.12, *) {
-			return UnfairLock()
-		} else {
-			return PThreadLock()
-		}
-	}
-
 	// Registered listeners.
 	private lazy var listeners: WeakBag<DSFAppearanceCacheNotifiable> = {
-		return WeakBag<DSFAppearanceCacheNotifiable>(lock: Self.DefaultLockType())
+		return WeakBag<DSFAppearanceCacheNotifiable>()
 	}()
 
 	// The change handler

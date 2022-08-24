@@ -23,8 +23,6 @@
 
 import AppKit
 
-// MARK: - NSView
-
 @objc public extension NSView {
 	/// Is this view displaying in dark mode?
 	///

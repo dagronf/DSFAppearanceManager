@@ -23,17 +23,15 @@
 
 import AppKit
 
-// MARK: - NSWindow
-
 public extension NSWindow {
+	/// Is the window displaying in dark mode?
+	@objc var isDarkMode: Bool {
+		return self.effectiveAppearance.isDarkMode
+	}
+
 	/// Perform the supplied block using the effective appearance of the window
 	@objc func usingEffectiveAppearance(_ block: () -> Void) {
-		if #available(macOS 10.14, *) {
-			self.effectiveAppearance.usingAsDrawingAppearance { block() }
-		}
-		else {
-			let saved = NSAppearance.current
-			defer { NSAppearance.current = saved }
+		self.effectiveAppearance.usingAsDrawingAppearance {
 			block()
 		}
 	}

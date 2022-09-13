@@ -212,19 +212,20 @@ private extension DSFAppearanceManager {
 		return Self.IsDark
 	}
 
-	/// Returns the user's current accent color
+	/// Returns the user's current accent color.
+	///
+	/// Note that before 10.14, there is no concept of an 'accent' color and older macOS seems to be
+	/// oddly inconsistent in its use.
 	static var AccentColor: NSColor {
 		if #available(OSX 10.14, *) {
 			// macOS 10.14 and above have a dedicated static NSColor
 			return NSColor.controlAccentColor
 		}
 
-		// Use standard user defaults for anything lower than 10.14
 		let userDefaults = UserDefaults.standard
 		guard userDefaults.object(forKey: kAccentColor) != nil else {
-			//  Pre-11.0, defaults to blue
-			//  Post-11.0, uses application-defined accent color if provided (SwiftUI only?), else blue
-			return Self.DefaultColor
+			// Just use the highlight color if we can't find an accent color
+			return HighlightColor
 		}
 
 		return ColorForInt(userDefaults.integer(forKey: kAccentColor))
@@ -234,16 +235,19 @@ private extension DSFAppearanceManager {
 	static var HighlightColor: NSColor {
 		let ud = UserDefaults.standard
 
-		guard let setting = ud.string(forKey: DSFAppearanceManager.kHighlightStyle) else {
-			return NSColor.systemGray
+		// See if we can find a highlight style in rgb format
+		if let setting = ud.string(forKey: DSFAppearanceManager.kHighlightStyle) {
+			let c = setting.components(separatedBy: " ")
+			if let r = Float(c[0]), let g = Float(c[1]), let b = Float(c[2]) {
+				return NSColor(calibratedRed: CGFloat(r), green: CGFloat(g), blue: CGFloat(b), alpha: 1.0)
+			}
 		}
 
-		let c = setting.components(separatedBy: " ")
-		guard let r = Float(c[0]), let g = Float(c[1]), let b = Float(c[2]) else {
-			return NSColor.systemGray
+		// Else, just fall back to the aqua variant
+		switch AquaVariant {
+		case .graphite: return NSColor.systemGray
+		case .blue: return NSColor.systemBlue
 		}
-
-		return NSColor(calibratedRed: CGFloat(r), green: CGFloat(g), blue: CGFloat(b), alpha: 1.0)
 	}
 
 	/// Returns the current aqua variant. (graphite or aqua style on older macOS)

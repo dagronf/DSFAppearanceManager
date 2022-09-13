@@ -200,8 +200,6 @@ And because `DynamicColor` inherits from `NSColor`, it can be used wherever `NSC
 
 [`ChimeHQ`](https://github.com/ChimeHQ) for developing the awesome [dynamic NSColor subclass](https://github.com/ChimeHQ/Dusk).
 
-## Releases
-
 ## License
 
 MIT. Use it and abuse it for anything you want, just attribute my work. Let me know if you do use it somewhere, I'd love to hear about it!

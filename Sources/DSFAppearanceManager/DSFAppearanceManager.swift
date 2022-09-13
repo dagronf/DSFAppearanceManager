@@ -217,18 +217,14 @@ private extension DSFAppearanceManager {
 	/// Note that before 10.14, there is no concept of an 'accent' color and older macOS seems to be
 	/// oddly inconsistent in its use.
 	static var AccentColor: NSColor {
-		if #available(OSX 10.14, *) {
+		if #available(macOS 10.14, *) {
 			// macOS 10.14 and above have a dedicated static NSColor
 			return NSColor.controlAccentColor
 		}
-
-		let userDefaults = UserDefaults.standard
-		guard userDefaults.object(forKey: kAccentColor) != nil else {
-			// Just use the highlight color if we can't find an accent color
-			return HighlightColor
+		else {
+			// Just use the menu highlight color - there's no concept of 'accent' color pre 10.14
+			return NSColor.selectedMenuItemColor
 		}
-
-		return ColorForInt(userDefaults.integer(forKey: kAccentColor))
 	}
 
 	/// Returns the user's current highlight color

@@ -10,7 +10,8 @@ let package = Package(
 	],
 	products: [
 		// Products define the executables and libraries a package produces, and make them visible to other packages.
-		.library(name: "DSFAppearanceManager", type: .static, targets: ["DSFAppearanceManager"]),
+		.library(name: "DSFAppearanceManager", targets: ["DSFAppearanceManager"]),
+		.library(name: "DSFAppearanceManager-static", type: .static, targets: ["DSFAppearanceManager"]),
 		.library(name: "DSFAppearanceManager-shared", type: .dynamic, targets: ["DSFAppearanceManager"]),
 	],
 	dependencies: [

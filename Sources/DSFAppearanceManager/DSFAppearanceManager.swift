@@ -333,11 +333,7 @@ private extension DSFAppearanceManager {
 	///
 	/// This feature is available from macOS 14. For systems prior to 14, this property always returns true.
 	static var AutoplayAnimatedImages: Bool {
-		if #available(macOS 14.0, *) {
-			return AXAnimatedImagesEnabled()
-		} else {
-			return true
-		}
+		ShouldAutoplayAnimatedImages()
 	}
 }
 

@@ -27,18 +27,19 @@ If you're performing custom drawing within your macOS app, it's important to obe
 
 These are the static properties available on the `DSFAppearanceManager`
 
-| Properties                  | Description                                                       |
-|-----------------------------|-------------------------------------------------------------------|
-| `IsDark`                    | Is the UI currently being displayed as dark                       |
-| `IsDarkMenu`                | Are the menu and dock currently being displayed as dark           |
-| `AccentColor`               | The current accent color                                          |
-| `HighlightColor`            | The current highlight color                                       |
-| `AquaVariant`               | The current aqua variant                                          |
-| `IncreaseContrast`          | The user's 'Increase Contrast' accessibility setting              |
-| `DifferentiateWithoutColor` | The user's 'Differentiate without color' accessibility setting    |
-| `ReduceTransparency`        | The user's 'Reduce transparency' accessibility setting            |
-| `InvertColors`              | The user's 'Invert colors' accessibility setting                  |
-| `ReduceMotion`              | The user's 'Reduce motion' accessibility setting                  |
+| Properties                  | Description                                                               |
+|:----------------------------|:--------------------------------------------------------------------------|
+| `IsDark`                    | Is the UI currently being displayed as dark                               |
+| `IsDarkMenu`                | Are the menu and dock currently being displayed as dark                   |
+| `AccentColor`               | The current accent color                                                  |
+| `HighlightColor`            | The current highlight color                                               |
+| `AquaVariant`               | The current aqua variant                                                  |
+| `IncreaseContrast`          | The user's 'Increase Contrast' accessibility setting                      |
+| `DifferentiateWithoutColor` | The user's 'Differentiate without color' accessibility setting            |
+| `ReduceTransparency`        | The user's 'Reduce transparency' accessibility setting                    |
+| `InvertColors`              | The user's 'Invert colors' accessibility setting                          |
+| `ReduceMotion`              | The user's 'Reduce motion' accessibility setting                          |
+| `AutoplayAnimatedImages`    | The user's 'Auto-play animated images' accessibility setting (macOS 14+)  |
 
 So, for example, to get the current macOS highlight color, call `DSFAppearanceManager.HighlightColor`.
 
@@ -84,13 +85,14 @@ appearanceChangeDetector.appearanceChangeCallback = { [weak self] change in
 The change object indicates the type of change that occurred.
 
 | Change type                | Description                                               |
-|----------------------------|-----------------------------------------------------------|
+|:---------------------------|:----------------------------------------------------------|
 | `theme`                    | The system appearance (eg. dark/light) changed            |
 | `accent`                   | The user changed the accent color(s) eg. accent/highlight |
 | `aquaVariant`              | For older macOS versions, the variant (blue, graphite)    |
 | `systemColors`             | The user changed the system colors                        |
 | `finderLabelColorsChanged` | The user changed finder label color(s)                    |
 | `accessibility`            | The accessibility display settings changed                |
+| `autoplayAnimatedImages`   | The auto-play animated images changed                     |
 
 Note that the change detection class debounces changes to reduce the number of callbacks when a change occurs.
 The `change` object passed in the callback block contains a set of the changes that occurred.
@@ -180,7 +182,7 @@ func drawRect(_ dirtyRect: CGRect) {
 }
 ```
 
-### Rolling your own dynamic `NSColor`
+## Rolling your own dynamic `NSColor`
 
 If you can't use the `Assets.xcassets` to store your dynamic `NSColor`s (or you want to move your app's configuration into code) you'll find that the default `NSColor` doesn't have much support for automatically handling light/dark mode changes.
  
@@ -200,14 +202,12 @@ And because `DynamicColor` inherits from `NSColor`, it can be used wherever `NSC
 
 [`ChimeHQ`](https://github.com/ChimeHQ) for developing the awesome [dynamic NSColor subclass](https://github.com/ChimeHQ/Dusk).
 
-## License
-
-MIT. Use it and abuse it for anything you want, just attribute my work. Let me know if you do use it somewhere, I'd love to hear about it!
+# License
 
 ```
 MIT License
 
-Copyright (c) 2022 Darren Ford
+Copyright (c) 2023 Darren Ford
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

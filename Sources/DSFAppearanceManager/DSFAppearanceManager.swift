@@ -83,6 +83,8 @@ import AppKit
 		case finderLabelColorsChanged = 4
 		/// Accessibility display settings changed
 		case accessibility = 5
+		/// Autoplay animated images changed
+		case autoplayAnimatedImages = 6
 
 		/// Returns the string representation of the value
 		public var name: String {
@@ -93,6 +95,7 @@ import AppKit
 			case .systemColors: return "systemColors"
 			case .finderLabelColorsChanged: return "finderLabelColorsChanged"
 			case .accessibility: return "accessibility"
+			case .autoplayAnimatedImages: return "autoplayAnimatedImages"
 			}
 		}
 	}
@@ -125,6 +128,7 @@ import AppKit
 		   reduceTransparency: \(Self.ReduceTransparency)
 		   invertColors: \(Self.InvertColors)
 		   reduceMotion: \(Self.ReduceMotion)
+		   autoplayAnimatedImages: \(Self.AutoplayAnimatedImages)
 		"""
 	}
 
@@ -322,6 +326,17 @@ private extension DSFAppearanceManager {
 		else {
 			// Fallback on earlier versions
 			return false
+		}
+	}
+
+	/// Get the current accessibility setting for 'Autoplay animated images'.
+	///
+	/// This feature is available from macOS 14. For systems prior to 14, this property always returns true.
+	static var AutoplayAnimatedImages: Bool {
+		if #available(macOS 14.0, *) {
+			return AXAnimatedImagesEnabled()
+		} else {
+			return true
 		}
 	}
 }

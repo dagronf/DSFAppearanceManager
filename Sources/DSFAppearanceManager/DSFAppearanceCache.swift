@@ -122,6 +122,9 @@ import Foundation
 	/// Get the current accessibility display option for invert colors. If this property's value is true then the display will be inverted. In these cases it may be needed for UI drawing to be adjusted to in order to display optimally when inverted.
 	@objc public private(set) var invertColors: Bool = DSFAppearanceManager.InvertColors
 
+	/// Get the current accessibility display option for autoplay animated images
+	@objc public private(set) var autoplayAnimatedImages: Bool = DSFAppearanceManager.AutoplayAnimatedImages
+
 	/// Create an appearance cache
 	@objc override public init() {
 		super.init()
@@ -160,6 +163,7 @@ import Foundation
 		self.reduceTransparency = DSFAppearanceManager.ReduceTransparency
 		self.reduceMotion = DSFAppearanceManager.ReduceMotion
 		self.invertColors = DSFAppearanceManager.InvertColors
+		self.autoplayAnimatedImages = DSFAppearanceManager.AutoplayAnimatedImages
 
 		self.listeners.validElements.forEach { listener in
 			listener.appearanceDidChange()

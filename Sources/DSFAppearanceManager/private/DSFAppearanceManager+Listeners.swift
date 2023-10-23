@@ -91,8 +91,22 @@ internal extension DSFAppearanceManager {
 			name: NSWorkspace.accessibilityDisplayOptionsDidChangeNotification,
 			object: NSWorkspace.shared
 		)
+
+		// Autoplay animated images (available only macOS 14)
+		if #available(macOS 14.0, *) {
+			NotificationCenter.default.addObserver(
+				self,
+				selector: #selector(animatedImagesChanged),
+				name: NSNotification.Name.AXAnimatedImagesEnabledDidChange,
+				object: nil
+			)
+		}
 	}
 	
+	@objc private func animatedImagesChanged(_ notification: Notification) {
+		self.appearanceDidChange(change: .autoplayAnimatedImages)
+	}
+
 	@objc private func themeChange() {
 		self.appearanceDidChange(change: .theme)
 	}

@@ -196,14 +196,12 @@ private extension DSFAppearanceManager {
 	/// Is the user interface being displayed as dark (Mojave and later)
 	static var IsDark: Bool {
 		if #available(OSX 10.14, *) {
-			// Fall back to the default NSApp.effectiveAppearance setting.
-			// Note that this might not always be accurate as the app may have explicitly set the effective appearance.
-			return NSApp.effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
-//			// The UserDefaults doesn't always seem to be set when the appearance changes. For example, setting the
-//			// mode via the Shortcuts app doesn't set it, but via System Preferences does. Don't know why.
-//			if let style = UserDefaults.standard.string(forKey: DSFAppearanceManager.kInterfaceStyle) {
-//				return style.lowercased().contains("dark")
-//			}
+			// Note that even though NSApp is _not_ marked as optional, is _can_ be optional IF it is called within the
+			// initializer of a class with a global static initialization (ie. before the app is ready).
+			// We need to check that NSApp exists before calling it, falling back to a default value if it doesn't
+			if let _ = NSApp {
+				return NSApp.effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+			}
 		}
 		return false
 	}

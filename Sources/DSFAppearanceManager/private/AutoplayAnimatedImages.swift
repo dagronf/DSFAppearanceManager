@@ -23,6 +23,8 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
+#if os(macOS)
+
 import Foundation
 import Accessibility
 
@@ -45,5 +47,7 @@ internal extension NSNotification.Name {
 }
 
 func ShouldAutoplayAnimatedImages() -> Bool { !DSFAppearanceManager.ReduceMotion }
+
+#endif
 
 #endif

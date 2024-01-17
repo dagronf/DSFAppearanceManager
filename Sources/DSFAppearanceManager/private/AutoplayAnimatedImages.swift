@@ -26,15 +26,16 @@
 import Foundation
 import Accessibility
 
+#if os(macOS)
 #if swift(>=5.9)
 
 // AXAnimatedImagesEnabled is only available in macOS 14
 
 @inlinable internal func ShouldAutoplayAnimatedImages() -> Bool {
-	if #available(macOS 14.0, *) {
+    if #available(macOS 14.0, *) {
 		return AXAnimatedImagesEnabled()
 	} else {
-		return !DSFAppearanceManager.ReduceMotion
+        return !DSFAppearanceManager.reduceMotion
 	}
 }
 
@@ -46,4 +47,5 @@ internal extension NSNotification.Name {
 
 func ShouldAutoplayAnimatedImages() -> Bool { !DSFAppearanceManager.ReduceMotion }
 
+#endif
 #endif

@@ -30,14 +30,45 @@ import Accessibility
 
 #if swift(>=5.9)
 
-// AXAnimatedImagesEnabled is only available in macOS 14
+// * AXAnimatedImagesEnabled/AXAnimatedImagesEnabledDidChange is available in macOS 14, but DEPRECATED (and
+//   UNAVAILABLE) in macOS 15.
+// * If we COMPILE with Xcode 16 beta, but TARGET macOS 14, we crash during runtime on macOS 14 when we access
+//   either of these symbols.
+//
+// So, we have to put in a special case for this case (compile on Xcode 16 beta, but deploy for macOS 14).
+
+func AutoplayAnimatedImagesNotificationName() -> Notification.Name? {
+	if #available(macOS 15.0, *) {
+		#if compiler(>=6)
+		return AccessibilitySettings.animatedImagesEnabledDidChangeNotification
+		#endif
+	}
+	else if #available(macOS 14.0, *) {
+		#if compiler(<6)
+		// This crashes during runtime if we compile using Xcode 16 (beta). 
+		// Seems like the only way to work around it is to drop support for animate images for macOS 14 IF
+		// compiling with Xcode 16 beta
+		return NSNotification.Name.AXAnimatedImagesEnabledDidChange
+		#endif
+	}
+	return nil
+}
 
 @inlinable internal func ShouldAutoplayAnimatedImages() -> Bool {
-	if #available(macOS 14.0, *) {
-		return AXAnimatedImagesEnabled()
-	} else {
-		return !DSFAppearanceManager.ReduceMotion
+	if #available(macOS 15.0, *) {
+		#if compiler(>=6)
+		return AccessibilitySettings.animatedImagesEnabled
+		#endif
 	}
+	else if #available(macOS 14.0, *) {
+		#if compiler(<6)
+		// This crashes during runtime if we compile using Xcode 16 (beta).
+		// Seems like the only way to work around it is to drop support for animate images for macOS 14 IF
+		// compiling with Xcode 16 beta
+		return AXAnimatedImagesEnabled()
+		#endif
+	}
+	return !DSFAppearanceManager.ReduceMotion
 }
 
 #else
@@ -47,6 +78,7 @@ internal extension NSNotification.Name {
 }
 
 func ShouldAutoplayAnimatedImages() -> Bool { !DSFAppearanceManager.ReduceMotion }
+func AutoplayAnimatedImagesNotificationName() -> Notification.Name? { AXAnimatedImagesEnabledDidChange }
 
 #endif
 

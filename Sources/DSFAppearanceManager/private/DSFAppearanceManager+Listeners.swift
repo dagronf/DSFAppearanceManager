@@ -92,17 +92,15 @@ internal extension DSFAppearanceManager {
 			object: NSWorkspace.shared
 		)
 
-#if swift(>=5.9)
-		if #available(macOS 14.0, *) {
-			// Autoplay animated images (available only macOS 14)
+		// Autoplay animated images changes
+		if let axName = AutoplayAnimatedImagesNotificationName() {
 			NotificationCenter.default.addObserver(
 				self,
 				selector: #selector(animatedImagesChanged),
-				name: NSNotification.Name.AXAnimatedImagesEnabledDidChange,
+				name: axName,
 				object: nil
 			)
 		}
-#endif
 	}
 	
 	@objc private func animatedImagesChanged(_ notification: Notification) {

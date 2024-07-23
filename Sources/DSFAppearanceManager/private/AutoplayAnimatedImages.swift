@@ -78,7 +78,7 @@ internal extension NSNotification.Name {
 }
 
 func ShouldAutoplayAnimatedImages() -> Bool { !DSFAppearanceManager.ReduceMotion }
-func AutoplayAnimatedImagesNotificationName() -> Notification.Name? { AXAnimatedImagesEnabledDidChange }
+func AutoplayAnimatedImagesNotificationName() -> Notification.Name? { NSNotification.Name.AXAnimatedImagesEnabledDidChange }
 
 #endif
 

@@ -52,7 +52,11 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "-NSColorSimulatedHardwareEnclosureNumber 4"
+            argument = "-NSColorSimulateHardwareAccent true"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-NSColorSimulatedHardwareEnclosureNumber 3"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

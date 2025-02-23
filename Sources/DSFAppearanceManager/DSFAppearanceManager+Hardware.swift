@@ -40,31 +40,18 @@ import AppKit
 	///
 	/// * `defaults write -g NSColorSimulateHardwareAccent -bool YES`
 	/// * `defaults write -g NSColorSimulatedHardwareEnclosureNumber -int 3`
+	///
+	/// You can also set these in Xcode via launch arguments for the scheme
 	@objc public static var SimulatedHardwareColor: NSColor? {
-		guard
-			let n = UserDefaults.standard.string(forKey: "NSColorSimulatedHardwareEnclosureNumber"),
-			let type = Int(n)
-		else {
-			return nil
-		}
-
-		switch type {
-		case 3:
-			return NSColor.systemYellow
-		case 4:
-			return NSColor.systemGreen
-		case 5:
-			return NSColor.systemBlue
-		case 6:
-			return NSColor.systemPink
-		case 7:
-			return NSColor.systemPurple
-		case 8:
-			return NSColor.systemOrange
-		default:
-			return nil
-		}
+		// This logic works because if the key isn't found it returns 0, which isn't in the dictionary
+		let hardwareType = UserDefaults.standard.integer(forKey: "NSColorSimulatedHardwareEnclosureNumber")
+		return hardwareColorMap__[hardwareType]
 	}
 }
+
+// Built-in hardware color (approximation)
+private let hardwareColorMap__: [Int: NSColor] = [
+	3: #colorLiteral(red: 0.954, green: 0.690, blue: 0.213, alpha: 1.000), 4: #colorLiteral(red: 0.219, green: 0.481, blue: 0.502, alpha: 1.000), 5: #colorLiteral(red: 0.181, green: 0.402, blue: 0.599, alpha: 1.000), 6: #colorLiteral(red: 0.825, green: 0.223, blue: 0.227, alpha: 1.000), 7: #colorLiteral(red: 0.335, green: 0.309, blue: 0.623, alpha: 1.000), 8: #colorLiteral(red: 0.957, green: 0.394, blue: 0.123, alpha: 1.000)
+]
 
 #endif

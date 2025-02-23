@@ -47,6 +47,22 @@ import AppKit
 		let hardwareType = UserDefaults.standard.integer(forKey: "NSColorSimulatedHardwareEnclosureNumber")
 		return hardwareColorMap__[hardwareType]
 	}
+
+	/// The known hardware colors
+	@objc(DSFAppearanceManagerHardwareColor)
+	public enum AvailableHardwareColor: Int {
+		case yellow = 3
+		case green = 4
+		case blue = 5
+		case pink = 6
+		case purple = 7
+		case orange = 8
+	}
+
+	/// Retrieve a color representation for the hardware color
+	@objc public static func hardwareColor(for type: AvailableHardwareColor) -> NSColor {
+		hardwareColorMap__[type.rawValue] ?? DSFAppearanceManager.AccentColor
+	}
 }
 
 // Built-in hardware color (approximation)

@@ -27,19 +27,21 @@ If you're performing custom drawing within your macOS app, it's important to obe
 
 These are the static properties available on the `DSFAppearanceManager`
 
-| Properties                  | Description                                                               |
-|:----------------------------|:--------------------------------------------------------------------------|
-| `IsDark`                    | Is the UI currently being displayed as dark                               |
-| `IsDarkMenu`                | Are the menu and dock currently being displayed as dark                   |
-| `AccentColor`               | The current accent color                                                  |
-| `HighlightColor`            | The current highlight color                                               |
-| `AquaVariant`               | The current aqua variant                                                  |
-| `IncreaseContrast`          | The user's 'Increase Contrast' accessibility setting                      |
-| `DifferentiateWithoutColor` | The user's 'Differentiate without color' accessibility setting            |
-| `ReduceTransparency`        | The user's 'Reduce transparency' accessibility setting                    |
-| `InvertColors`              | The user's 'Invert colors' accessibility setting                          |
-| `ReduceMotion`              | The user's 'Reduce motion' accessibility setting                          |
-| `AutoplayAnimatedImages`    | The user's 'Auto-play animated images' accessibility setting (macOS 14+)  |
+| Properties                       | Description                                                               |
+|:---------------------------------|:--------------------------------------------------------------------------|
+| `IsDark`                         | Is the UI currently being displayed as dark                               |
+| `IsDarkMenu`                     | Are the menu and dock currently being displayed as dark                   |
+| `AccentColor`                    | The current accent color                                                  |
+| `HighlightColor`                 | The current highlight color                                               |
+| `AquaVariant`                    | The current aqua variant                                                  |
+| `IncreaseContrast`               | The user's 'Increase Contrast' accessibility setting                      |
+| `DifferentiateWithoutColor`      | The user's 'Differentiate without color' accessibility setting            |
+| `ReduceTransparency`             | The user's 'Reduce transparency' accessibility setting                    |
+| `InvertColors`                   | The user's 'Invert colors' accessibility setting                          |
+| `ReduceMotion`                   | The user's 'Reduce motion' accessibility setting                          |
+| `AutoplayAnimatedImages`         | The user's 'Auto-play animated images' accessibility setting (macOS 14+)  |
+| `SimulatedHardwareColor`         | The color representing the user's hardware color (iMac 2021-)             |
+| `IsUsingSimulatedHardwareColor`  | Is the user using the hardware color as the accent color (iMac 2021-)     |
 
 So, for example, to get the current macOS highlight color, call `DSFAppearanceManager.HighlightColor`.
 

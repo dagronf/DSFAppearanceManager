@@ -50,6 +50,12 @@
             ReferencedContainer = "container:DSFAppearanceManager Demo.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <CommandLineArguments>
+         <CommandLineArgument
+            argument = "-NSColorSimulatedHardwareEnclosureNumber 4"
+            isEnabled = "YES">
+         </CommandLineArgument>
+      </CommandLineArguments>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"

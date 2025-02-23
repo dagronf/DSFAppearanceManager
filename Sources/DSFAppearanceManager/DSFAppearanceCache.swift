@@ -125,6 +125,12 @@ import Foundation
 	/// Get the current accessibility display option for autoplay animated images
 	@objc public private(set) var autoplayAnimatedImages: Bool = DSFAppearanceManager.AutoplayAnimatedImages
 
+	/// Is the user using the hardware color as the accent color?
+	@objc public private(set) var isUsingSimulatedHardwareColor: Bool = DSFAppearanceManager.IsUsingSimulatedHardwareColor
+
+	/// The simulated hardware color for this machine
+	@objc public private(set) var simulatedHardwareColor: NSColor? = DSFAppearanceManager.SimulatedHardwareColor
+
 	/// Create an appearance cache
 	@objc override public init() {
 		super.init()
@@ -164,6 +170,8 @@ import Foundation
 		self.reduceMotion = DSFAppearanceManager.ReduceMotion
 		self.invertColors = DSFAppearanceManager.InvertColors
 		self.autoplayAnimatedImages = DSFAppearanceManager.AutoplayAnimatedImages
+		self.isUsingSimulatedHardwareColor = DSFAppearanceManager.IsUsingSimulatedHardwareColor
+		self.simulatedHardwareColor = DSFAppearanceManager.SimulatedHardwareColor
 
 		self.listeners.validElements.forEach { listener in
 			listener.appearanceDidChange()

@@ -29,6 +29,8 @@ class ViewController: NSViewController, DSFAppearanceCacheNotifiable {
 	@IBOutlet weak var reduceMotionImage: NSImageView!
 	@IBOutlet weak var autoplayAnimatedImagesImage: NSImageView!
 
+	@IBOutlet weak var simulatedHardwareColor: NSColorWell!
+
 	let imageYes = NSImage(named: "image-yes")!
 	let imageNo = NSImage(named: "image-no")!
 
@@ -64,6 +66,9 @@ class ViewController: NSViewController, DSFAppearanceCacheNotifiable {
 			invertColorsImage.image = DSFAppearanceManager.InvertColors ? imageYes : imageNo
 			reduceMotionImage.image = DSFAppearanceManager.ReduceMotion ? imageYes : imageNo
 			autoplayAnimatedImagesImage.image = DSFAppearanceManager.AutoplayAnimatedImages ? imageYes : imageNo
+
+			simulatedHardwareColor.color = DSFAppearanceManager.SimulatedHardwareColor ?? .clear
+
 		}
 	}
 

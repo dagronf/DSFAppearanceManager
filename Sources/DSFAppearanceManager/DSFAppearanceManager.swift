@@ -129,6 +129,8 @@ import AppKit
 		   invertColors: \(Self.InvertColors)
 		   reduceMotion: \(Self.ReduceMotion)
 		   autoplayAnimatedImages: \(Self.AutoplayAnimatedImages)
+		   usingHardwareColor: \(Self.IsUsingSimulatedHardwareColor)
+		   simulatedHardwareColor: \(Self.SimulatedHardwareColor)
 		"""
 	}
 

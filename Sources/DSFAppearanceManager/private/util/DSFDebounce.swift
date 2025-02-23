@@ -1,7 +1,5 @@
 //
-//  DSFDebounce.swift
-//
-//  Created by Darren Ford on 23/10/20.
+//  Copyright © 2025 Darren Ford. All rights reserved.
 //
 //  MIT license
 //

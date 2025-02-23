@@ -1,7 +1,5 @@
 //
-//  NSAppearance+extensions.swift
-//
-//  Copyright © 2022 Darren Ford. All rights reserved.
+//  Copyright © 2025 Darren Ford. All rights reserved.
 //
 //  MIT license
 //

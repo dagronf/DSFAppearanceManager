@@ -209,7 +209,7 @@ And because `DynamicColor` inherits from `NSColor`, it can be used wherever `NSC
 ```
 MIT License
 
-Copyright (c) 2023 Darren Ford
+Copyright (c) 2025 Darren Ford
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

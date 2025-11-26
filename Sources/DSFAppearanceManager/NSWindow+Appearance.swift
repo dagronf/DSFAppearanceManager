@@ -54,5 +54,76 @@ public func UsingEffectiveAppearance(
 	}
 }
 
+// MARK: - window appearance toggle
+
+extension NSWindow {
+	/// Add a popup button to the title of this window to allow changing the appearance.
+	public func addDarkModeToggleAccessory() {
+		guard #available(macOS 10.14, *) else { return }
+		let vc = NSTitlebarAccessoryViewController()
+		vc.layoutAttribute = .right
+
+		let b = NSPopUpButton(frame: .init(x: 0, y: 0, width: 60, height: 30)) // .zero)
+		b.translatesAutoresizingMaskIntoConstraints = false
+
+		b.controlSize = .mini
+		b.isBordered = false
+		b.alignment = .right
+		b.addItem(withTitle: "light")
+		b.item(at: 0)?.target = self
+		b.item(at: 0)?.action = #selector(setLightMode)
+		b.item(at: 0)?.attributedTitle = NSAttributedString(string: "light", attributes: [.font: NSFont.menuFont(ofSize: 10)])
+		b.addItem(withTitle: "dark")
+		b.item(at: 1)?.target = self
+		b.item(at: 1)?.action = #selector(setDarkMode)
+		b.item(at: 1)?.attributedTitle = NSAttributedString(string: "dark", attributes: [.font: NSFont.menuFont(ofSize: 10)])
+		b.addItem(withTitle: "system")
+		b.item(at: 2)?.target = self
+		b.item(at: 2)?.action = #selector(setSystemDarkMode)
+		b.item(at: 2)?.attributedTitle = NSAttributedString(string: "system", attributes: [.font: NSFont.menuFont(ofSize: 10)])
+
+		if self.appearance == nil {
+			b.selectItem(at: 2)
+		}
+		else {
+			let dark = self.effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+			b.selectItem(at: dark ? 1 : 0)
+		}
+
+		vc.view = b
+		self.addTitlebarAccessoryViewController(vc)
+	}
+
+	@available(macOS 10.14, *)
+	@objc private func setDarkMode() {
+		self.appearance = NSAppearance(named: .darkAqua)
+	}
+
+	@available(macOS 10.14, *)
+	@objc private func setLightMode() {
+		self.appearance = NSAppearance(named: .aqua)
+	}
+
+	@available(macOS 10.14, *)
+	@objc private func setSystemDarkMode() {
+		self.appearance = nil
+	}
+
+	@available(macOS 10.14, *)
+	@objc private func toggleDarkMode(_ sender: NSButton) {
+		if sender.state == .on {
+			self.appearance = NSAppearance(named: .darkAqua)
+			sender.title = "🌑"
+		}
+		else if sender.state == .mixed {
+			self.appearance = nil
+			sender.title = "🌓"
+		}
+		else {
+			self.appearance = NSAppearance(named: .aqua)
+			sender.title = "🌕"
+		}
+	}
+}
 
 #endif
